@@ -1,0 +1,28 @@
+.Dash {
+    display: flex;
+}
+
+.Dash .container {
+    background-color: #FBFBFB;
+    flex: 6;
+}
+
+.container .Users {
+    text-align: left;
+    color: #213F7D;
+    font-family: Work Sans;
+    font-size: 24px;
+    font-weight: 500;
+    position: relative;
+}
+
+.container .widget {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+.listcontainer {
+    padding: 20px;
+    margin: 20px;
+}
