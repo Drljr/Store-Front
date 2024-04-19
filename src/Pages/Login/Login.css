@@ -1,8 +1,10 @@
 .logo1 {
-    position: absolute;
-    left: -13%;
-    /* top: -300px; */
-    margin-bottom: -400px;
+    height: 140px;
+    padding: 1px;
+    display: flex;
+    padding: 4px, 12px, 4px, 12px;
+    margin-left: 15px;
+    margin-top: 250px;
 }
 
 .container {
@@ -18,9 +20,10 @@
     /* Move the section to the right side */
     float: right;
     /* Adjust margin or padding for better positioning */
-    margin-top: 200px;
+    margin-top: 10px;
     /* Add some margin for spacing */
     margin-right: 150px;
+    margin-bottom: 25%;
 }
 
 .username,
@@ -65,7 +68,7 @@
     cursor: pointer;
     position: absolute;
     /* Use absolute positioning */
-    bottom: 290px;
+    bottom: 310px;
     /* Position from the bottom */
     right: 160px;
     /* Position from the right */
@@ -88,14 +91,14 @@
 }
 
 .Login-text1 {
-    left: 1130px;
+    left: 1155px;
     top: 210px;
     font-size: 38px;
     font-family: sans-serif;
 }
 
 .Login-text2 {
-    left: 1180px;
+    left: 1190px;
     top: 280px;
     color: grey;
     font-family: sans-serif;
