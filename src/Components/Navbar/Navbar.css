@@ -1,0 +1,31 @@
+.wrapper {
+    height: 70px;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    height: 40px;
+    width: 400px;
+}
+
+.search input {
+    height: 40px;
+    width: 400px;
+    border-radius: 8px;
+    border: 1px solid #213F7D;
+    outline: none;
+    color: #545F7D;
+    background-color: #FFFFFF;
+    padding-left: 15px;
+}
+
+input ::placeholder {
+    font-size: 14px;
+    font-weight: 400;
+}

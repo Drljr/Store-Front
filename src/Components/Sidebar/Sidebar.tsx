@@ -1,27 +1,14 @@
 import './Sidebar.css';
 import logo from '../../assets/logo.png';
-// import { FaHome } from "react-icons/fa";
-// import { FaUserGroup } from "react-icons/fa6";
-// import { FaUsers } from "react-icons/fa";
-// import { TbMoneybag } from "react-icons/tb";
-// import { GiShakingHands } from "react-icons/gi";
-// import { FaPiggyBank } from "react-icons/fa";
-// import { GiReceiveMoney } from "react-icons/gi";
-// import { FaUserCheck } from "react-icons/fa6";
-// import { FaUserXmark } from "react-icons/fa6";
-// import { FaBriefcase } from "react-icons/fa";
-// import { GoChevronDown } from "react-icons/go";
-// import { BsBank } from "react-icons/bs";
-// import { BiSolidCoinStack } from "react-icons/bi";
-// import { GrTransaction } from "react-icons/gr";
-// import { GiFlowerTwirl } from "react-icons/gi";
-// import { FaUserGear } from "react-icons/fa6";
-// import { FaScroll } from "react-icons/fa";
-// import { VscGraph } from "react-icons/vsc";
-// import { RiEqualizerFill } from "react-icons/ri";
-// import { LuBadgePercent } from "react-icons/lu";
-// import { TbClipboardList } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import { CiHome } from "react-icons/ci";
+import { GiHandTruck } from "react-icons/gi";
+import { IoBarChartOutline } from "react-icons/io5";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BsBox } from "react-icons/bs";
+import { GoChecklist } from "react-icons/go";
+import { IoSettingsOutline } from "react-icons/io5";
+import { MdOutlineLogout } from "react-icons/md";
 
 
 
@@ -37,32 +24,34 @@ export const Sidebar = () => {
             </div>
             <div className="center">
                 <ul>
-
                     <li onClick={handleClick} >
-                        {/* <FaHome className="icon" /> */}
-                        <span> Dashboard </span>
+                        <span><CiHome className='icon1' /> Dashboard </span>
                     </li>
                     <li>
-                        {/* <FaUserGroup className="icon" /> */}
-                        <span> inventory </span>
+                        <span><GiHandTruck className='icon2' /> Inventory </span>
                     </li>
                     <li>
-                        {/* <FaUsers className="icon" /> */}
-                        <span> Reports </span>
+                        <span><IoBarChartOutline className='icon3' /> Reports </span>
                     </li>
                     <li>
-                        {/* <TbMoneybag className="icon" /> */}
-                        <span> Suppliers </span>
+                        <span><FaRegUserCircle className='icon4' /> Suppliers </span>
                     </li>
                     <li>
-                        {/* <GiShakingHands className="icon" /> */}
-                        <span> Orders </span>
+                        <span><BsBox className='icon5' /> Orders </span>
                     </li>
                     <li>
-                        {/* <FaPiggyBank className="icon" /> */}
-                        <span> Manage Stores </span>
+                        <span><GoChecklist className='icon6' /> Manage Stores </span>
                     </li>
-                    
+                </ul>
+            </div>
+            <div className='center2'>
+                <ul>
+                    <li>
+                        <span><IoSettingsOutline className='icon7' /> Settings </span>
+                    </li>
+                    <li>
+                        <span><MdOutlineLogout className='icon8' /> Logout </span>
+                    </li>
                 </ul>
             </div>
         </div>

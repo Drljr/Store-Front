@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+
+}
+
+.container .wrapper{
+    background-color: #FBFBFB;
+    flex: 6;
+}

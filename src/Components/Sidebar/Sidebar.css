@@ -1,78 +1,133 @@
-.Sidebar{
-    background-color: #FFFFFF;
-    flex: 1;
-    min-height: 100vh;
+.Sidebar {
+    background-color: white;
+    flex: 2;
+    min-height: 75vh;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px, 24px, 32px, 24px;
+    width: 275px;
+    margin-left: -7.9px;
+    margin-top: -10px;
+
 }
+
 .Sidebar .top {
-    height: 30px;
+    height: 40px;
     padding: 1px;
     display: flex;
-    margin-top: 20px;
-    margin-right: 50px;
-    justify-content: center;
+    padding: 4px, 12px, 4px, 12px;
+    margin-left: 15px;
+    margin-top: 12px;
 }
 
 .Sidebar .center {
-    padding-left: 20px;
+    padding-left: 30px;
+}
+
+.Sidebar .center2 {
+    padding-left: 30px;
 }
 
 .center {
     position: absolute;
 }
 
-.dashBoard {
-    position: absolute;
-    top: 90px;
-}
-
-.center ul {
-    list-style: none;
-    margin: 0;
-    padding: 4px;
-    margin-top: 40px;
-}
-
 .center ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    margin-top: 45px;
-}
-
-.center ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    margin-top: 45px;
-}
-
-ul .title {
-    font-size: 12px;
-    color: #545F7D;
-    font-weight: 500;
     margin-top: 70px;
-    margin-bottom: 15px;
 }
 
 ul li {
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 20px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-
+    font-size: 16px;
+    font-weight: 500;
+    font-family: sans-serif;
 }
 
 li .icon {
     color: #8e9ab0;
 }
 
-ul li:hover {
-    background-color: #39CDCC;
+ul :hover {
+    color: grey;
 }
 
 span {
     margin-left: 10px;
-    color: #213F7D;
+    color: Grey/grey-600;
+}
+
+.center2 {
+    position: absolute;
+
+}
+
+.center2 ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-top: 600px;
+
+}
+
+.icon1,
+.icon2,
+.icon3,
+.icon4,
+.icon5,
+.icon6,
+.icon7,
+.icon8 {
+    width: 25px;
+    height: 20px;
+    margin-bottom: -3px;
+}
+
+/* TABLET RESPONSIVENESS {** ##just trying stuffs**} */
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .Sidebar {
+        min-height: 80vh;
+    }
+}
+
+/* PHONE RESPOSIVENESS {** ##just trying stuffs**} */
+
+@media only screen and (max-width: 767px) {
+    .Sidebar {
+        min-height: 80vh;
+    }
+
+    .Sidebar .top {
+        height: 25px;
+        padding: 1px;
+        display: flex;
+        padding: 4px, 12px, 4px, 12px;
+        margin-left: 15px;
+        margin-top: 12px;
+    }
+
+    .Sidebar {
+        background-color: white;
+        flex: 2;
+        display: flex;
+        justify-content: space-between;
+        padding: 24px, 24px, 32px, 24px;
+        width: 180px;
+        margin-left: -7.9px;
+        margin-top: -10px;
+    }
+
+    .Sidebar .center {
+        padding-left: 1px;
+    }
+
+    .Sidebar .center2 {
+        padding-left: 1px;
+    }
 }
