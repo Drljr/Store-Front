@@ -1,7 +1,7 @@
 .Sidebar {
     background-color: white;
     flex: 2;
-    min-height: 75vh;
+    min-height: 85vh;
     display: flex;
     justify-content: space-between;
     padding: 24px, 24px, 32px, 24px;
@@ -13,7 +13,7 @@
 
 .Sidebar .top {
     height: 40px;
-    padding: 1px;
+    padding: 12px;
     display: flex;
     padding: 4px, 12px, 4px, 12px;
     margin-left: 15px;
@@ -22,10 +22,12 @@
 
 .Sidebar .center {
     padding-left: 30px;
+    padding-top: 30px;
 }
 
 .Sidebar .center2 {
     padding-left: 30px;
+    padding-top: 90px;
 }
 
 .center {
