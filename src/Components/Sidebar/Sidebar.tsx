@@ -16,6 +16,11 @@ export const Sidebar = () => {
 
     const navigate = useNavigate();
     const handleClick = () => { navigate("../Dashboard") }
+    const handleClick1 = () => { navigate("..Inventory") }
+    const handleClick2 = () => { navigate("../Dashboard") }
+    const handleClick3 = () => { navigate("../Dashboard") }
+    const handleClick4 = () => { navigate("../Dashboard") }
+    const handleClick5 = () => { navigate("../Dashboard") }
 
     return (
         <div className='Sidebar'>
@@ -27,19 +32,19 @@ export const Sidebar = () => {
                     <li onClick={handleClick} >
                         <span><CiHome className='icon1' /> Dashboard </span>
                     </li>
-                    <li>
+                    <li onClick={handleClick1}>
                         <span><GiHandTruck className='icon2' /> Inventory </span>
                     </li>
-                    <li>
+                    <li onClick={handleClick2}>
                         <span><IoBarChartOutline className='icon3' /> Reports </span>
                     </li>
-                    <li>
+                    <li onClick={handleClick3}>
                         <span><FaRegUserCircle className='icon4' /> Suppliers </span>
                     </li>
-                    <li>
+                    <li onClick={handleClick4}>
                         <span><BsBox className='icon5' /> Orders </span>
                     </li>
-                    <li>
+                    <li onClick={handleClick5}>
                         <span><GoChecklist className='icon6' /> Manage Stores </span>
                     </li>
                 </ul>
