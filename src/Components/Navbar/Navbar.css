@@ -3,8 +3,8 @@
     display: flex;
     justify-content: space-between;
     padding: 25px 20px;
-    margin-top: -748px;
-    width: 82.65%;
+    margin-top: -860px;
+    width: 82%;
     margin-left: 15.5%;
 }
 
@@ -16,7 +16,7 @@
 
 .search {
     position: relative;
-    display: inline-block;
+    /* display: inline-block; */
     margin-left: 2%;
 }
 

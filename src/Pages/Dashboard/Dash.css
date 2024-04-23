@@ -5,10 +5,69 @@ body {
 
 .container {
     display: flex;
+    flex: 1;
 
 }
 
-/* .container .wrapper{
-    background-color: gray;
+.container .wrapper{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
     flex: 6;
-} */
+}
+
+
+.widget-1 {
+    width: 800px;
+    height: 170px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-right: 20px;
+    margin-top: 20px;
+    float: left;
+    left: 17%;
+    padding-left: 10px;
+    justify-content: space-between;
+}
+
+.widget-2 {
+    width: 500px;
+    height: 170px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    margin-right: 20px;
+    padding-left: 10px;
+    float: right;
+    position: relative;
+
+}
+.widget-3 {
+    width: 800px;
+    height: 400px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-right: 20px;
+    margin-top: 20px;
+    float: left;
+    left: 17%;
+    padding-left: 10px;
+    justify-content: space-between;
+}
+.widget-4{
+    width: 500px;
+    height: 400px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    margin-right: 20px;
+    padding-left: 10px;
+    float: right;
+    position: relative;
+}

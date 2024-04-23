@@ -1,7 +1,8 @@
 import './Navbar.css';
 import { IoIosSearch } from "react-icons/io";
 import { GoBell } from "react-icons/go";
-import profileImage from "../../assets/profile.svg"
+import profileImage from "../../assets/profile.svg";
+
 export const Navbar = () => {
     return (
         <div className='nav-bar'>
