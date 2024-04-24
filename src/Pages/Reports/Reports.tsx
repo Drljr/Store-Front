@@ -16,10 +16,10 @@ export const Reports = () => {
                 <div className="widgets-2">
                     <h3>Best Selling Category</h3>
                 </div>
-                <div className="widget">
+                <div className="widgetR">
                     <h3>Profit & Revenue</h3>
                 </div>
-                <div className="widget">
+                <div className="widgetR">
                     <h3>Best Selling Product</h3>
                 </div>
             </div>

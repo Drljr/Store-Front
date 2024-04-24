@@ -1,37 +1,35 @@
 .Sidebar {
     background-color: white;
-    /* flex: 2; */
-    min-height: 100vh;
+    flex: 2;
+    min-height: 95vh;
     display: flex;
     justify-content: space-between;
-    padding: 24px, 24px, 32px, 24px;
-    width: 275px;
+    padding: 24px;
+    width: 225px;
     margin-left: -7.9px;
     margin-top: -10px;
-
 }
 
 .Sidebar .top {
     height: 40px;
-    padding: 12px;
+    padding: 1px;
     display: flex;
-    padding: 4px, 12px, 4px, 12px;
-    margin-left: 15px;
-    margin-top: 12px;
+    padding: 4px 12px;
+    margin-left: -20px;
+    margin-top: -10px;
 }
 
 .Sidebar .center {
     padding-left: 30px;
-    padding-top: 30px;
+    position: absolute;
+    /* Retained absolute positioning */
 }
 
 .Sidebar .center2 {
-    padding-left: 30px;
-    margin-top: 30px;
-}
-
-.center {
+    left: 14px;
     position: absolute;
+    /* Retained absolute positioning */
+    top: 650px;
 }
 
 .center ul {
@@ -44,55 +42,30 @@
 ul li {
     display: flex;
     align-items: center;
-    padding: 20px;
-    padding-top: 30px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 500;
     font-family: sans-serif;
+    padding: 25px;
+    /* Adjusted padding for better click area */
 }
 
 li .icon {
     color: #8e9ab0;
 }
 
-ul :hover {
-    color: grey;
-}
-
 span {
     margin-left: 10px;
-    color: Grey/grey-600;
+    color: #696969;
+    /* Adjusted to a specific grey color */
 }
 
-.center2 {
-    position: absolute;
-
+/* Add hover effect */
+li:hover {
+    background-color: #f0f0f0;
 }
 
-.center2 ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    margin-top: 650px;
-
-}
-
-.icon1,
-.icon2,
-.icon3,
-.icon4,
-.icon5,
-.icon6,
-.icon7,
-.icon8 {
-    width: 25px;
-    height: 20px;
-    margin-bottom: -3px;
-}
-
-/* TABLET RESPONSIVENESS {** ##just trying stuffs**} */
-
+/* Adjust responsiveness as needed */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
     .Sidebar {
         min-height: 70vh;
@@ -105,31 +78,17 @@ span {
     }
 }
 
-/* PHONE RESPOSIVENESS {** ##just trying stuffs**} */
-
 @media only screen and (max-width: 767px) {
     .Sidebar {
         min-height: 80vh;
+        width: 180px;
     }
 
     .Sidebar .top {
         height: 25px;
-        padding: 1px;
-        display: flex;
-        padding: 4px, 12px, 4px, 12px;
+        padding: 4px 12px;
         margin-left: 15px;
         margin-top: 12px;
-    }
-
-    .Sidebar {
-        background-color: white;
-        flex: 2;
-        display: flex;
-        justify-content: space-between;
-        padding: 24px, 24px, 32px, 24px;
-        width: 180px;
-        margin-left: -7.9px;
-        margin-top: -10px;
     }
 
     .Sidebar .center {
