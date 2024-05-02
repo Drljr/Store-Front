@@ -20,7 +20,7 @@ export const Sidebar = () => {
     const handleReportsClick = () => { navigate("/Reports") }
     const handleOrdersClick = () => { navigate("/Orders") };
     const handleSupplyClick = () => { navigate("/Suppliers") }
-    const handleManagementClick = () => { navigate("/Management") };
+    const handleManagementClick = () => { navigate("/ManageStore") };
     const handleSettingsClick = () => { navigate("/Settings") };
     const handleLogoutClick = () => { navigate("/") };
     return (
