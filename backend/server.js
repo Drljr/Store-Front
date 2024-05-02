@@ -1,15 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const bodyParser = require("body-parser");
 const UserRoute = require("./routes/userRoute");
 const errorHandler = require("./middleWare/errorMiddleWare");
 
 dotenv.config({ path: './config.env' });
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-const uri = "mongodb+srv://manLikeDesy:KwFKFJIZKjAu6Lfv@cluster0.rdkifef.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -32,22 +29,21 @@ const app = express();
 
 //middlewares
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+
+//error middleware
+app.use(errorHandler);
+
 
 //Routes Middleware
 app.use("/api/user", UserRoute);
 
 //routes
-app.get('/', (req, res) => {
-    res.send("Home page");
+app.get('/', (_, res) => {
+    res.send("Home page").status(200);
 });
 
-//error middleware
-app.use(errorHandler);
-
 //port
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.BACKEND_PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
