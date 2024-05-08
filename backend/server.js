@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const UserRoute = require("./routes/userRoute");
 const errorHandler = require("./middleWare/errorMiddleWare");
-const cors = require("cors")
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 dotenv.config({ path: './config.env' });
 
 const uri = process.env.MONGO_URI;
@@ -12,8 +13,10 @@ const app = express();
 
 //middlewares
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors())
 app.use(logger('dev'))
+
 //error middleware
 app.use(errorHandler);
 
