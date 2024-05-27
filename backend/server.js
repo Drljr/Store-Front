@@ -3,6 +3,7 @@ const logger = require("morgan")
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const UserRoute = require("./routes/userRoute");
+const productRoutes = require("./routes/productRoute")
 const errorHandler = require("./middleWare/errorMiddleWare");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -23,6 +24,7 @@ app.use(errorHandler);
 
 //Routes Middleware
 app.use("/api/user", UserRoute);
+app.use("/products", productRoutes);
 
 //routes
 app.get('/', (_, res) => {
