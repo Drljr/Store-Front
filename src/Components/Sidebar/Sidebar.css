@@ -1,33 +1,27 @@
 .Sidebar {
-    background-color: white;
-    flex: 2;
-    min-height: 95vh;
-    display: flex;
-    justify-content: space-between;
-    padding: 24px;
-    width: 225px;
-    margin-left: -7.9px;
-    margin-top: -10px;
+    position: absolute;
+    left: 0;
+    width: 15.5%;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 1000;
 }
 
-.Sidebar .top {
-    height: 40px;
-    padding: 1px;
-    display: flex;
-    padding: 4px 12px;
-    margin-left: -20px;
-    margin-top: -10px;
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: inherit;
+    text-decoration: none;
 }
 
 .Sidebar .center {
-    padding-left: 30px;
+    padding-left: 0px;
     position: absolute;
 }
 
 .Sidebar .center2 {
-    left: 14px;
     position: absolute;
-    top: 650px;
+    padding: 25px 0px;
 }
 
 .center ul {
@@ -61,37 +55,129 @@ ul li:hover span {
     color: black;
 }
 
-
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
+/* Tablet screens (max-width: 1024px) */
+@media (max-width: 1024px) {
     .Sidebar {
-        min-height: 70vh;
-    }
-}
-
-@media only screen and (max-width: 1133px) {
-    .Sidebar {
-        min-height: 80vh;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .Sidebar {
-        min-height: 80vh;
-        width: 180px;
-    }
-
-    .Sidebar .top {
-        height: 25px;
-        padding: 4px 12px;
-        margin-left: 15px;
-        margin-top: 12px;
+        width: 20%;
+        /* Slightly wider for better readability */
     }
 
     .Sidebar .center {
-        padding-left: 1px;
+        padding-left: 20px;
+        /* Reduce padding */
+    }
+
+    .center ul {
+        margin-top: 50px;
+        /* Reduce top margin */
+    }
+
+    ul li {
+        font-size: 14px;
+        /* Smaller font */
+        padding: 20px;
+        /* Reduce padding */
+    }
+
+    span {
+        margin-left: 8px;
+        /* Reduce spacing */
+    }
+}
+
+/* Mobile screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .Sidebar {
+        width: 60px;
+        /* Collapse to icon-only width */
+        overflow-x: hidden;
+        /* Hide text overflow */
+    }
+
+    .Sidebar .center {
+        padding-left: 10px;
+        /* Minimal padding */
+    }
+
+    .center ul {
+        margin-top: 30px;
+        /* Further reduce top margin */
+    }
+
+    ul li {
+        font-size: 0;
+        /* Hide text by default */
+        padding: 15px;
+        /* Smaller padding */
+        justify-content: center;
+        /* Center icons */
+    }
+
+    li .icon {
+        font-size: 20px;
+        /* Ensure icons are visible */
+    }
+
+    span {
+        display: none;
+        /* Hide text on mobile */
     }
 
     .Sidebar .center2 {
-        padding-left: 1px;
+        left: 10px;
+        bottom: 10px;
+    }
+
+    /* Show text on hover for mobile */
+    .Sidebar:hover {
+        width: 200px;
+        /* Expand on hover */
+    }
+
+    .Sidebar:hover ul li {
+        font-size: 14px;
+        /* Show text on hover */
+        justify-content: flex-start;
+        /* Align items back to start */
+    }
+
+    .Sidebar:hover span {
+        display: inline;
+        /* Show text on hover */
+    }
+}
+
+/* Very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .Sidebar {
+        width: 50px;
+        /* Even smaller icon-only width */
+    }
+
+    .Sidebar .center {
+        padding-left: 8px;
+    }
+
+    .center ul {
+        margin-top: 20px;
+    }
+
+    ul li {
+        padding: 12px;
+    }
+
+    li .icon {
+        font-size: 18px;
+        /* Slightly smaller icons */
+    }
+
+    .Sidebar:hover {
+        width: 180px;
+        /* Slightly smaller expanded width */
+    }
+
+    .Sidebar:hover ul li {
+        font-size: 12px;
+        /* Smaller text on hover */
     }
 }

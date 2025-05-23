@@ -1,5 +1,4 @@
 import './Sidebar.css';
-import logo from '../../assets/logo.png';
 import { useNavigate } from "react-router-dom";
 import { CiHome } from "react-icons/ci";
 import { GiHandTruck } from "react-icons/gi";
@@ -25,9 +24,7 @@ export const Sidebar = () => {
     const handleLogoutClick = () => { navigate("/") };
     return (
         <div className='Sidebar'>
-            <div className="top">
-                <img src={logo} alt="sign in" className="logo" />
-            </div>
+
             <div className="center">
                 <ul>
                     <li onClick={handleDashboardClick}>
@@ -49,8 +46,7 @@ export const Sidebar = () => {
                         <span><GoChecklist className='icon6' /> Manage Stores </span>
                     </li>
                 </ul>
-            </div>
-            <div className='center2'>
+                            <div className='center2'>
                 <ul>
                     <li onClick={handleSettingsClick}>
                         <span><IoSettingsOutline className='icon7' /> Settings </span>
@@ -60,6 +56,8 @@ export const Sidebar = () => {
                     </li>
                 </ul>
             </div>
+            </div>
+
         </div>
     )
 }

@@ -1,3 +1,15 @@
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    transition: margin-left 0.3s ease;
+}
+.widget-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    transition: margin-left 0.3s ease;
+}
 .widgets-1 {
     width: 40%;
     height: 170px;
@@ -6,11 +18,9 @@
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
     position: relative;
     margin-right: 20px;
-    margin-top: 20px;
-    float: left;
+    margin-top: 10px;
     left: 17%;
     padding-left: 10px;
-    justify-content: space-between;
 }
 
 .widgets-2 {
@@ -19,12 +29,12 @@
     border-radius: 8px;
     background-color: white;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-    margin-top: 20px;
+    margin-top: 10px;
     margin-right: 20px;
     padding-left: 10px;
     float: right;
-    position: relative;
 }
+
 .widgetR {
     width: 80.5%;
     height: 350px;
@@ -38,4 +48,104 @@
     left: 17%;
     padding-left: 20px;
     justify-content: space-between;
+}
+
+/* Tablet screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .wrapper {
+        padding: 8px;
+    }
+
+    .widget-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        /* Adjust width */
+    }
+
+    .widgets-1,
+    .widgets-2 {
+        width: 80%;
+        /* Slightly wider to fit tablet */
+        min-width: 280px;
+        height: 150px;
+        /* Slightly smaller height */
+    }
+
+    .widgets-2 {
+        margin-left: auto;
+        padding-left: 10px;
+    }
+
+    .widgetR {
+        width: 80%;
+        min-width: 500px;
+        height: 320px;
+    }
+}
+
+/* Mobile screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 5px;
+    }
+
+    .widget-container {
+        width: 90%;
+        /* Adjust width */
+    }
+
+    .widgets-1,
+    .widgets-2 {
+        width: 100%;
+        /* Full width to stack them */
+        min-width: 0;
+        /* Remove min-width constraint */
+        height: 120px;
+        margin-right: 0;
+        /* Remove right margin */
+    }
+
+    .widgetR {
+        width: 90%;
+        min-width: 0;
+        height: 300px;
+        margin-right: 0;
+    }
+
+    /* Adjust margin-left when sidebar expands on hover */
+    .Sidebar:hover~.wrapper {
+        margin-left: 200px;
+        /* Match expanded sidebar width (200px) */
+    }
+}
+
+/* Very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 3px;
+    }
+
+    .widget-container {
+        width: 95%;
+        /* Adjust width */
+    }
+
+    .widgets-1,
+    .widgets-2 {
+        width: 100%;
+        /* Full width to stack them */
+        height: 100px;
+    }
+
+    .widgetR {
+        width: 95%;
+        height: 280px;
+    }
+
+    /* Adjust margin-left when sidebar expands on hover */
+    .Sidebar:hover~.wrapper {
+        margin-left: 180px;
+        /* Match expanded sidebar width (180px) */
+    }
 }

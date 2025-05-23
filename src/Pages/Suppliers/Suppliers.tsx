@@ -5,9 +5,9 @@ import Navbar from '../../Components/Navbar/Navbar';
 export const Suppliers = () => {
     return (
         <div className="Container" >
-            <Sidebar />
+            <Navbar />
             <div className="Container-2">
-                <Navbar />
+                <Sidebar />
             </div>
             <div className="wrapper">
                 <div className="widget">

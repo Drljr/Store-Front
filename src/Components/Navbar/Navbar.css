@@ -1,11 +1,14 @@
 .nav-bar {
     background-color: white;
-    display: flex;
-    justify-content: space-between;
     padding: 25px 20px;
-    margin-top: -870px;
-    width: 82%;
-    margin-left: 15.5%;
+    display: flex;
+    align-items: center;
+    top: 0;
+    left: 15.5%; /* Align with sidebar width on large screens */
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: left 0.3s ease; /* Smooth transition for sidebar hover */
 }
 
 .nav-bar a {
@@ -13,20 +16,28 @@
     text-decoration: none;
     padding: 10px;
 }
-
+.nav-bar .top {
+    height: 40px;
+    display: flex;
+    padding: 4px 0px;
+    width: 100%;
+}
 .search {
+    display: flex;
+    align-items: center;
     position: relative;
-    /* display: inline-block; */
-    margin-left: 2%;
+    width: 50%;
+    max-width: 500px;
+    margin-left: 60%;
 }
 
 .search input[type="text"] {
+    flex: 1;
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 4px;
     color: #333;
     padding: 10px 20px 10px 40px;
-    width: 100%;
     font-size: 16px;
     transition: background-color 0.2s ease-in-out;
 }
@@ -49,30 +60,140 @@
     color: #999;
 }
 
-.search input[type="text"]:focus+.search::before {
-    color: #333;
-}
-
 .notification-bell {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
+    margin-left: 20px;
     font-size: 18px;
     color: #999;
-    margin-left: 1230px;
 }
 
 .profile-image {
-    position: absolute;
-    top: 50%;
-    /* left: calc(100% - 120px); */
-    margin-left: 1290px;
-    transform: translateY(-50%);
+    margin-left: 20px;
     width: 30px;
     height: 30px;
-    display: inline-block;
     border-radius: 50%;
-    background-image: url("profile.svg");
-    background-size: cover;
+}
+
+/* Tablet screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .nav-bar {
+        padding: 15px 15px;
+        /* Slightly smaller padding */
+        left: 20%;
+        /* Align with sidebar width (20% on tablet) */
+    }
+
+    .search {
+        margin-left: 29%;
+        /* Adjust margin for tablet */
+        width: 60%;
+        /* Slightly wider to fit content */
+        max-width: 400px;
+        /* Reduce max-width */
+    }
+
+    .search input[type="text"] {
+        font-size: 15px;
+        padding: 8px 18px 8px 35px;
+    }
+
+    .search-icon {
+        font-size: 16px;
+    }
+
+    .notification-bell {
+        margin-left: 15px;
+        font-size: 16px;
+    }
+
+    .profile-image {
+        margin-left: 15px;
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Mobile screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .nav-bar {
+        padding: 10px 10px;
+        /* Smaller padding for mobile */
+        left: 60px;
+        /* Align with collapsed sidebar width (60px) */
+        flex-wrap: wrap;
+        /* Allow wrapping if needed */
+    }
+
+    .search {
+        margin-left: 0;
+        /* Remove large margin */
+        width: 100%;
+        /* Full width on mobile */
+        max-width: none;
+        /* Remove max-width constraint */
+    }
+
+    .search input[type="text"] {
+        font-size: 14px;
+        /* Smaller font for mobile */
+        padding: 8px 15px 8px 35px;
+    }
+
+    .search-icon {
+        font-size: 16px;
+        left: 8px;
+    }
+
+    .notification-bell {
+        margin-left: 10px;
+        font-size: 16px;
+    }
+
+    .profile-image {
+        margin-left: 10px;
+        width: 25px;
+        height: 25px;
+    }
+
+    /* Adjust left when sidebar expands on hover */
+    .Sidebar:hover~.nav-bar {
+        left: 200px;
+        /* Match expanded sidebar width (200px) */
+    }
+}
+
+/* Very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .nav-bar {
+        padding: 8px 10px;
+        left: 50px;
+        /* Align with collapsed sidebar width (50px) */
+    }
+
+    .search input[type="text"] {
+        font-size: 12px;
+        /* Even smaller font */
+        padding: 6px 12px 6px 30px;
+    }
+
+    .search-icon {
+        font-size: 14px;
+        left: 6px;
+    }
+
+    .notification-bell {
+        margin-left: 8px;
+        font-size: 14px;
+    }
+
+    .profile-image {
+        margin-left: 8px;
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Adjust left when sidebar expands on hover */
+    .Sidebar:hover~.nav-bar {
+        left: 180px;
+        /* Match expanded sidebar width (180px) */
+    }
 }

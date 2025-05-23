@@ -1,28 +1,174 @@
-.widget1{
-    width: 80.5%;
+.wrapper {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* margin-left: 15.5%; */
+    /* Align with sidebar width on large screens */
+    margin-top: 20px;
+    /* Account for fixed navbar height (adjust if needed) */
+    transition: margin-left 0.3s ease;
+    /* Smooth transition for sidebar hover */
+}
+
+.widget1 {
     height: 170px;
     border-radius: 8px;
     background-color: white;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-    position: relative;
-    margin-right: 20px;
     margin-top: 20px;
-    float: left;
-    left: 17%;
-    padding-left: 20px;
-    justify-content: space-between;
+    margin-bottom: 20px;
+    /* Add spacing between widgets */
 }
+
 .widget2 {
-    width: 80.5%;
-    height: 65vh;
+    height: 85vh;
+    /* Default height for large screens */
     border-radius: 8px;
     background-color: white;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-    position: relative;
-    margin-right: 20px;
-    margin-top: 20px;
-    float: left;
-    left: 17%;
-    padding-left: 20px;
+    overflow-x: auto;
+    /* Allow horizontal scrolling for table on small screens */
+}
+
+h3 {
+    display: flex;
     justify-content: space-between;
+    padding: 10px;
+    /* Add padding for better spacing */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Ensure borders don't double up */
+}
+
+thead {
+    border-bottom: 1px solid #ccc;
+}
+
+tbody {
+    border-bottom: 1px solid #ccc;
+}
+
+tr {
+    height: 30px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    display: table-row;
+    /* Use table-row for proper table layout */
+}
+
+th {
+    text-align: center;
+    padding: 8px;
+    /* Add padding for better appearance */
+    font-size: 14px;
+    /* Consistent font size */
+}
+
+td {
+    font-size: 14px;
+    text-align: center;
+    padding: 8px;
+}
+
+/* Tablet screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .wrapper {
+        margin-left: 8%;
+        /* Align with sidebar width (20% on tablet) */
+        padding: 8px;
+        /* Slightly smaller padding */
+    }
+
+    .widget1 {
+        height: 150px;
+        /* Slightly smaller height */
+    }
+
+    .widget2 {
+        height: 80vh;
+        /* Adjust height for tablet */
+    }
+
+    th,
+    td {
+        font-size: 13px;
+        /* Slightly smaller font */
+        padding: 6px;
+        /* Reduce padding */
+    }
+}
+
+/* Mobile screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .wrapper {
+        margin-left: 20px;
+        /* Align with collapsed sidebar width (60px) */
+        margin-top: 70px;
+        /* Adjust for potentially smaller navbar */
+        padding: 5px;
+    }
+
+    .widget1 {
+        height: 120px;
+        /* Smaller height for mobile */
+    }
+
+    .widget2 {
+        height: 70vh;
+        /* Shorter height for mobile */
+    }
+
+    /* Adjust table for mobile */
+    table {
+        min-width: 600px;
+        /* Ensure table is scrollable */
+    }
+
+    th,
+    td {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    /* Adjust margin-left when sidebar expands on hover */
+    .Sidebar:hover~.wrapper {
+        margin-left: 200px;
+        /* Match expanded sidebar width (200px) */
+    }
+}
+
+/* Very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .wrapper {
+        margin-left: 20px;
+        /* Align with collapsed sidebar width (50px) */
+        margin-top: 60px;
+        /* Further adjust for smaller navbar */
+        padding: 3px;
+    }
+
+    .widget1 {
+        height: 100px;
+        /* Even smaller height */
+    }
+
+    .widget2 {
+        height: 65vh;
+        /* Even shorter height */
+    }
+
+    th,
+    td {
+        font-size: 11px;
+        padding: 4px;
+    }
+
+    /* Adjust margin-left when sidebar expands on hover */
+    .Sidebar:hover~.wrapper {
+        margin-left: 180px;
+        /* Match expanded sidebar width (180px) */
+    }
 }
