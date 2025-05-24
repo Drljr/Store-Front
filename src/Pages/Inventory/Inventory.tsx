@@ -1,8 +1,23 @@
 import './Inventory.css';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import Navbar from '../../Components/Navbar/Navbar';
+import { ListFilter } from 'lucide-react';
+import { useState } from 'react';
+import Modal  from './Modal';
 
 export const Inventory = () => {
+    // State to manage modal visibility
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // Function to open the modal
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+
     return (
         <div className="Container" >
             <Navbar />
@@ -17,7 +32,11 @@ export const Inventory = () => {
                     <h3>
                     Products
                         <span>
-                            <button className='addproduct'>Add Product</button>
+                            <button className='addproduct' onClick={openModal}>Add Product</button>
+                            <button className='filter'>
+                                <ListFilter className='filter-icon' size={12} />
+                                Filter
+                            </button>
                         </span>
                     </h3>
                     <table>
@@ -52,6 +71,7 @@ export const Inventory = () => {
                     </table>
                 </div>
             </div>
+            {isModalOpen && <Modal closeModal={closeModal} />}
         </div>
     );
 }
