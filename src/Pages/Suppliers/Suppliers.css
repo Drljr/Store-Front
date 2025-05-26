@@ -12,3 +12,25 @@
     padding-left: 20px;
     justify-content: space-between;
 }
+h3 {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    /* Add padding for better spacing */
+}
+
+h3 span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.addsupplier,
+.filter {
+    width: 120px;
+    height: 35px;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
