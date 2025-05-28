@@ -47,7 +47,7 @@ export const Inventory = () => {
                     <h3>
                     Products
                         <span>
-                            <button className='addproduct' onClick={() => setIsModalOpen(true)}>Add Product</button>
+                            <button className='addproduct' onClick={openModal}>Add Product</button>
                             <button className='filter'>
                                 <ListFilter className='filter-icon' size={12} />
                                 Filter

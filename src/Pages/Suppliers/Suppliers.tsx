@@ -25,6 +25,11 @@ export const Suppliers = () => {
             .catch(error => console.error("Error fetching suppliers:", error));
     }, []);
 
+        // Callback passed to modal to add product to state
+    const handleAddSupplier = (newSupplier) => {
+        setSuppliers(prev => [...prev, newSupplier]);
+        setIsSupplierModalOpen(false);
+    };
 
 
     return (
@@ -60,11 +65,11 @@ export const Suppliers = () => {
                             {suppliers.map((supplier, index) => (
                                 <tr key={index}>
                                     <td>{supplier.name}</td>
-                                    <td>{supplier.products.join(', ')}</td>
-                                    <td>{supplier.contactNumber}</td>
+                                    <td>{supplier.product}</td>
+                                    <td>{supplier.contact}</td>
                                     <td>{supplier.email}</td>
                                     <td>{supplier.type}</td>
-                                    <td>{supplier.amountSupplied}</td>
+                                    <td>{supplier.amountsupplied}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -72,7 +77,7 @@ export const Suppliers = () => {
                 </div>
             </div>
             {isSupplierModalOpen && (
-                <SupplierModal closeModal={closeSupplierModal} />
+                <SupplierModal closeModal={closeSupplierModal} onAdd={handleAddSupplier} />
             )}
         </div>
     );

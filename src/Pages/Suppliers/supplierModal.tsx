@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./supplierModal.css"; // Reuse the same CSS for consistency
 
-const supplierModal = ({ closeModal }) => {
+const supplierModal = ({ closeModal , onAdd}) => {
   const [supplierData, setSupplierData] = useState({
-    supplierName: "",
-    productsSupplied: "",
+    name: "",
+    product: "",
     category: "",
-    contactInfo: "",
+    contact: "",
     email: "",
     type: "",
-    amountSupplied: "",
+    amountsupplied: "",
   });
 
   const handleChange = (e) => {
@@ -20,29 +20,28 @@ const supplierModal = ({ closeModal }) => {
     }));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const formData = new FormData();
-    Object.entries(supplierData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
   
     try {
       const response = await fetch("http://localhost:5000/suppliers", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(supplierData),
       });
   
-      if (!response.ok) throw new Error("Failed to add supplier");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to add supplier: ${errorText}`);
+      }
       const result = await response.json();
-      console.log("Supplier added:", result);
+      onAdd(result);
       closeModal();
     } catch (error) {
-      console.error("Error adding supplier:", error);
+      console.error(error);
     }
   };
+  
   
 
 
@@ -57,8 +56,8 @@ const supplierModal = ({ closeModal }) => {
               <label>Supplier Name</label>
               <input
                 type="text"
-                name="supplierName"
-                value={supplierData.supplierName}
+                name="name"
+                value={supplierData.name}
                 onChange={handleChange}
                 placeholder="Enter supplier name"
               />
@@ -67,8 +66,8 @@ const supplierModal = ({ closeModal }) => {
               <label>Product</label>
               <input
                 type="text"
-                name="productsSupplied"
-                value={supplierData.productsSupplied}
+                name="product"
+                value={supplierData.product}
                 onChange={handleChange}
                 placeholder="Enter product"
               />
@@ -87,8 +86,8 @@ const supplierModal = ({ closeModal }) => {
               <label>Contact Number</label>
               <input
                 type="tel"
-                name="contactInfo"
-                value={supplierData.contactInfo}
+                name="contact"
+                value={supplierData.contact}
                 onChange={handleChange}
                 placeholder="Enter contact number"
               />
@@ -122,15 +121,15 @@ const supplierModal = ({ closeModal }) => {
               <label>Amount Supplied</label>
               <input
                 type="number"
-                name="amountSupplied"
-                value={supplierData.amountSupplied}
+                name="amountsupplied"
+                value={supplierData.amountsupplied}
                 onChange={handleChange}
                 placeholder="Enter amount supplied"
               />
             </div>
           </div>
           <div className="modal-actions">
-            <button type="button" className="discard-btn" onClick={closeModal}>
+            <button type="button" className="discard-btn" onClick={() => { closeModal(); onAdd(supplierData); }}>
               Discard
             </button>
             <button type="submit" className="add-btn">

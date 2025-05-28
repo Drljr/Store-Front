@@ -22,7 +22,7 @@ const supplierSchema = new mongoose.Schema({
         required: true
     },
     amountsupplied: {
-        type: String,
+        type: Number,
         required: true
     },
 }, {
