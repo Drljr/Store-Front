@@ -11,8 +11,6 @@ const supplierModal = ({ closeModal }) => {
     type: "",
     amountSupplied: "",
   });
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,23 +20,30 @@ const supplierModal = ({ closeModal }) => {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = { ...supplierData, image };
-    console.log("Supplier Data with Image:", formData);
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
+  
+    const formData = new FormData();
+    Object.entries(supplierData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+  
+    try {
+      const response = await fetch("http://localhost:5000/suppliers", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) throw new Error("Failed to add supplier");
+      const result = await response.json();
+      console.log("Supplier added:", result);
+      closeModal();
+    } catch (error) {
+      console.error("Error adding supplier:", error);
     }
-    closeModal();
   };
+  
 
 
   return (
@@ -46,24 +51,7 @@ const supplierModal = ({ closeModal }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>New Supplier</h2>
         <form onSubmit={handleSubmit}>
-          <div className="modal-image">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="image-preview" />
-            ) : (
-              <div className="dashed-box">
-                <label htmlFor="image-upload-supplier">
-                  Drag image here or Browse image
-                </label>
-                <input
-                  type="file"
-                  id="image-upload-supplier"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-              </div>
-            )}
-          </div>
+          
           <div className="modal-form">
             <div className="form-group">
               <label>Supplier Name</label>

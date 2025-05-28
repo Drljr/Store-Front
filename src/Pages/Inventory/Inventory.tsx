@@ -2,8 +2,11 @@ import './Inventory.css';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import Navbar from '../../Components/Navbar/Navbar';
 import { ListFilter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../../api/axios.js';
 import Modal  from './Modal';
+
+
 
 export const Inventory = () => {
     // State to manage modal visibility
@@ -17,6 +20,18 @@ export const Inventory = () => {
         setIsModalOpen(false);
     };
 
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        api.get('http://localhost:5000/products')
+          .then(response => setProducts(response.data))
+          .catch(error => console.error("Error fetching products:", error));
+    }, []);
+    
+    // Callback passed to modal to add product to state
+    const handleAddProduct = (newProduct) => {
+        setProducts(prev => [...prev, newProduct]);
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="Container" >
@@ -32,7 +47,7 @@ export const Inventory = () => {
                     <h3>
                     Products
                         <span>
-                            <button className='addproduct' onClick={openModal}>Add Product</button>
+                            <button className='addproduct' onClick={() => setIsModalOpen(true)}>Add Product</button>
                             <button className='filter'>
                                 <ListFilter className='filter-icon' size={12} />
                                 Filter
@@ -51,27 +66,21 @@ export const Inventory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Product 1</td>
-                                <td>$10.00</td>
-                                <td>Quantity 1</td>
-                                <td>100 packets</td>
-                                <td>2023-12-31</td>
-                                <td>In Stock</td>
-                            </tr>
-                            <tr>
-                                <td>Product 1</td>
-                                <td>$10.00</td>
-                                <td>Quantity 1</td>
-                                <td>100 packets</td>
-                                <td>2023-12-31</td>
-                                <td>In Stock</td>
-                            </tr>
+                            {products.map((product) => (
+                                <tr key={product._id}>
+                                    <td>{product.name}</td>
+                                    <td>${product.buyingPrice.toFixed(2)}</td>
+                                    <td>{product.quantity}</td>
+                                    <td>{product.thresholdValue} packets</td>
+                                    <td>{new Date(product.expiryDate).toLocaleDateString()}</td>
+                                    <td>{product.availability ? 'In Stock' : 'Out of Stock'}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
             </div>
-            {isModalOpen && <Modal closeModal={closeModal} />}
+            {isModalOpen && <Modal closeModal={closeModal} onAdd={handleAddProduct} />}
         </div>
     );
 }

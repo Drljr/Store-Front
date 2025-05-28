@@ -80,6 +80,21 @@
     border-radius: 4px;
     font-size: 14px;
 }
+.form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    /* Remove default arrow styling on some browsers (optional) */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+.form-group input[type="file"] {
+    display: none; /* Hide the default file input */
+}
 
 .modal-actions {
     display: flex;

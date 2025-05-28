@@ -24,12 +24,12 @@ body {
     margin-bottom: 25%;
 }
 
-.username,
+.email,
 .password {
     margin-bottom: 20px;
 }
 
-.username label,
+.email label,
 .password label {
     display: block;
     margin-bottom: 10px;
@@ -37,7 +37,7 @@ body {
     font-family: sans-serif;
 }
 
-.username input,
+.email input,
 .password input {
     width: 350px;
     padding: 10px 20px;

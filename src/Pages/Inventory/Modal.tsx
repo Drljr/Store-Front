@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Modal.css";
 
-const Modal = ({ closeModal }) => {
+const Modal = ({ closeModal, onAdd }) => {
   const [productData, setProductData] = useState({
-    productName: "",
+    name: "",
     productId: "",
     category: "",
     buyingPrice: "",
@@ -11,68 +11,63 @@ const Modal = ({ closeModal }) => {
     unit: "",
     expiryDate: "",
     thresholdValue: "",
+    availability: "",
   });
-  const [image, setImage] = useState(null); // State for the uploaded image
-  const [imagePreview, setImagePreview] = useState(null); // State for the image preview
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProductData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Create a preview URL
+    // Convert availability to boolean
+    if (name === "availability") {
+      setProductData(prev => ({
+        ...prev,
+        [name]: value === "true" ? true : false,
+      }));
+    } else {
+      setProductData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
+  
 
-  const handleSubmit = (e) => {
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Include the image in the product data (you may need to upload it to a server)
-    const formData = { ...productData, image };
-    console.log("Product Data with Image:", formData); // Replace with API call
-    // Clean up the preview URL to avoid memory leaks
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
+
+    try {
+      const response = await fetch("http://localhost:5000/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) throw new Error("Failed to add product");
+      const newProduct = await response.json();
+
+      onAdd(newProduct);  // Update parent product list here
+      closeModal();
+    } catch (error) {
+      console.error(error);
     }
-    closeModal();
   };
+  
+  
 
   return (
     <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>New Product</h2>
         <form onSubmit={handleSubmit}>
-          <div className="modal-image">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="image-preview" />
-            ) : (
-              <div className="dashed-box">
-                <label htmlFor="image-upload">
-                  Drag image here or Browse image
-                </label>
-                <input
-                  type="file"
-                  id="image-upload"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-              </div>
-            )}
-          </div>
           <div className="modal-form">
             <div className="form-group">
               <label>Product Name</label>
               <input
                 type="text"
-                name="productName"
-                value={productData.productName}
+                name="name"
+                value={productData.name}
                 onChange={handleChange}
                 placeholder="Enter product name"
               />
@@ -118,16 +113,6 @@ const Modal = ({ closeModal }) => {
               />
             </div>
             <div className="form-group">
-              <label>Unit</label>
-              <input
-                type="text"
-                name="unit"
-                value={productData.unit}
-                onChange={handleChange}
-                placeholder="Enter product unit"
-              />
-            </div>
-            <div className="form-group">
               <label>Expiry Date</label>
               <input
                 type="date"
@@ -145,6 +130,18 @@ const Modal = ({ closeModal }) => {
                 onChange={handleChange}
                 placeholder="Enter threshold value"
               />
+            </div>
+            <div className="form-group">
+              <label>Availability</label>
+              <select
+                name="availability"
+                value={productData.availability}
+                onChange={handleChange}
+              >
+                <option value="">Select availability</option>
+                <option value="true">In Stock</option>
+                <option value="false">Out of Stock</option>
+              </select>
             </div>
           </div>
           <div className="modal-actions">

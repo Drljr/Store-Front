@@ -1,14 +1,47 @@
 const Product = require('../models/ProductModel');
 
-exports.createProduct = async (req, res) => {
+exports.createProduct = async (req, res, next) => {
     try {
-        const product = new Product(req.body);
+        const {
+            name,
+            productId,
+            category,
+            buyingPrice,
+            quantity,
+            unit,
+            expiryDate,
+            thresholdValue,
+            availability,
+        } = req.body;
+
+        // Validate required fields if needed
+        if (!name || !buyingPrice || !quantity || !thresholdValue || !expiryDate || !availability) {
+            return res.status(400).json({ error: 'Please provide all required fields.' });
+    }
+
+        const product = new Product({
+            name,
+            productId,
+            category,
+            buyingPrice: buyingPrice ? Number(buyingPrice) : undefined,
+            quantity: quantity ? Number(quantity) : undefined,
+            unit,
+            expiryDate,
+            thresholdValue: thresholdValue ? Number(thresholdValue) : undefined,
+            availability: availability === 'true' || availability === true,
+            imagePath: image ? image.path : undefined, // save the image path or URL in your DB
+        });
+
         await product.save();
+
+        res.status(201).json(savedProduct);
+
         res.status(201).json(product);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+    } catch (error) {
+        next(error);
     }
 };
+  
 
 exports.getAllProducts = async (req, res) => {
     try {

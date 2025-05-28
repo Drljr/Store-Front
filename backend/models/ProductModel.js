@@ -22,9 +22,11 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     availability: {
-        type: Boolean,
-        required: true
-    }
+        type: String,
+        enum: ['In Stock', 'Out of Stock'],
+        default: 'In Stock'
+    },
+      
 });
 
 const Product = mongoose.model('Product', ProductSchema);

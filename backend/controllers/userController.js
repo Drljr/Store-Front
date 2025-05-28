@@ -7,6 +7,17 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
+// Get all users
+const getAllUsers = asyncHandler(async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500);
+        throw new Error("Failed to fetch users");
+    }
+});
+
 // Register User
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -35,11 +46,15 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("Internal Server Error");
     }
 
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     // Create new user
     const user = await User.create({
         name,
         email,
-        password,
+        password: hashedPassword, // Store the hashed password
     });
 
     // Generate token
@@ -49,7 +64,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1day
+        expires: new Date(Date.now() + 1000 * 86400), // 1 day
         sameSite: "none",
         secure: true,
     });
@@ -66,25 +81,25 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-// LOgin User
+// Login User
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
-    
+    const { email, password } = req.body;
+
     // Validate request
     if (!email || !password) {
         res.status(400);
         throw new Error("Please fill email and password");
     }
 
-    //Check if user exist
+    // Check if user exists
     const user = await User.findOne({ email });
 
     if (!user) {
         res.status(400);
-        throw new Error("User not found, please signUp");
+        throw new Error("User not found, please sign up");
     }
 
-    // User exist, check if password is correct
+    // User exists, check if password is correct
     const passwordIsCorrect = await bcrypt.compare(password, user.password);
 
     // Generate Token
@@ -94,7 +109,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1day
+        expires: new Date(Date.now() + 1000 * 86400), // 1 day
         sameSite: "none",
         secure: true,
     });
@@ -106,9 +121,8 @@ const loginUser = asyncHandler(async (req, res) => {
         });
     } else {
         res.status(400);
-        throw new Error("invalid email or password");
+        throw new Error("Invalid email or password");
     }
-
 });
 
 // Logout User
@@ -120,11 +134,12 @@ const logout = asyncHandler(async (req, res) => {
         sameSite: "none",
         secure: true,
     });
-    return res.status(200).json({message: "logged out Successfully"})
-})
+    return res.status(200).json({ message: "Logged out successfully" });
+});
 
 module.exports = {
+    getAllUsers,
     registerUser,
     loginUser,
-    logout
+    logout,
 };

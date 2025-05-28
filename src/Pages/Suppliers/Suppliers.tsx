@@ -2,8 +2,9 @@ import './Suppliers.css';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import Navbar from '../../Components/Navbar/Navbar';
 import { ListFilter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SupplierModal from './supplierModal';
+import api from '../../api/axios.js';
 
 
 export const Suppliers = () => {
@@ -15,6 +16,16 @@ export const Suppliers = () => {
     const closeSupplierModal = () => {
         setIsSupplierModalOpen(false);
     };
+
+    const [suppliers, setSuppliers] = useState([]);
+
+    useEffect(() => {
+        api.get('http://localhost:5000/suppliers')
+            .then(response => setSuppliers(response.data))
+            .catch(error => console.error("Error fetching suppliers:", error));
+    }, []);
+
+
 
     return (
         <div className="Container" >
@@ -42,18 +53,20 @@ export const Suppliers = () => {
                                 <th>Contact Number</th>
                                 <th>Email</th>
                                 <th>Type</th>
-                                <th>On the way</th>
+                                <th>Amount Supplied</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Supplier 1</td>
-                                <td>Product A, Product B</td>
-                                <td>(123) 456-7890</td>
-                                <td>supplier1@example.com</td>
-                                <td>Not Taking return</td>
-                                <td>13</td>
-                            </tr>
+                            {suppliers.map((supplier, index) => (
+                                <tr key={index}>
+                                    <td>{supplier.name}</td>
+                                    <td>{supplier.products.join(', ')}</td>
+                                    <td>{supplier.contactNumber}</td>
+                                    <td>{supplier.email}</td>
+                                    <td>{supplier.type}</td>
+                                    <td>{supplier.amountSupplied}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

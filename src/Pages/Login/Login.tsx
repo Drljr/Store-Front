@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../assets/logo.png';
 import { useNavigate } from "react-router-dom";
-// import axios from 'axios';
+import api from '../../api/axios.js';
 import './Login.css';
 
 interface LoginFormState {
-    username: string;
+    email: string;
     password: string;
 }
 
 function Login() {
     const [formData, setFormData] = useState<LoginFormState>({
-        username: '',
+        email: '',
         password: '',
     });
     const [error, setError] = useState<string>('');
@@ -19,20 +19,27 @@ function Login() {
     const [loadingSuccess, setLoadingSuccess] = useState<boolean>(false); // New state for loading success
     const navigate = useNavigate();
 
-    const handleLogin = async (username: string, password: string) => {
-        if (username === 'desmond001' && password === 'storefront') {
-            const token = 'fake_token';
-            localStorage.setItem('jwtToken', token);
-            localStorage.setItem('username', username);
+    const handleLogin = async (email: string, password: string) => {
+        try {
+            const response = await api.post('/user/login', { email, password });
+            const { name, email: userEmail } = response.data;
+    
             setSuccess('Login successful');
-            setLoadingSuccess(true); // Set loading success to true
+            setLoadingSuccess(true);
+
+            // Optionally save email in localStorage
+            localStorage.setItem('userEmail', userEmail);
+            localStorage.setItem('name', name);
+    
             setTimeout(() => {
                 navigate('/dashboard');
             }, 1000);
-        } else {
-            setError('Invalid username or password');
+        } catch (err: any) {
+            const message = err.response?.data?.message || 'Login failed';
+            setError(message);
         }
     };
+    
 
     useEffect(() => {
         const errorTimer = setTimeout(() => {
@@ -51,8 +58,8 @@ function Login() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const { username, password } = formData;
-        handleLogin(username, password);
+        const { email, password } = formData;
+        handleLogin(email, password);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,15 +117,15 @@ function Login() {
                     </div>
                 </div>
                 <div className='input-section'>
-                    <div className='username'>
-                        <label htmlFor="username">Username</label>
+                    <div className='email'>
+                        <label htmlFor="email">Email</label>
                         <input
                             type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
+                            id="email"
+                            name="email"
+                            value={formData.email}
                             onChange={handleChange}
-                            placeholder="Enter your username"
+                            placeholder="Enter your email"
                         />
                     </div>
                     <div className='password'>
