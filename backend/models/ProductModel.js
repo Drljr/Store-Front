@@ -5,28 +5,40 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    buyingPrice: {
+    sku: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        enum: ['all', 'Electronics', 'Furniture', 'Lifestyle', 'Sports', 'Books'],
+        default: 'all'
+    },
+    price: {
         type: Number,
         required: true
     },
-    quantity: {
+    stock: {
         type: Number,
         required: true
     },
-    thresholdValue: {
+    minStock: {
         type: Number,
         required: true
     },
-    expiryDate: {
-        type: Date,
-        required: true
-    },
-    availability: {
+    status: {
         type: String,
         enum: ['In Stock', 'Out of Stock'],
         default: 'In Stock'
     },
-      
+    supplier: { // Added supplier field
+        type: String,
+        required: true
+    },
+    lastUpdated: {
+        type: Date,
+        required: true
+    },
 });
 
 const Product = mongoose.model('Product', ProductSchema);

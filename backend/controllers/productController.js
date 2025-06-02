@@ -4,44 +4,40 @@ exports.createProduct = async (req, res, next) => {
     try {
         const {
             name,
-            productId,
+            sku,
             category,
-            buyingPrice,
-            quantity,
-            unit,
-            expiryDate,
-            thresholdValue,
-            availability,
+            price,
+            stock,
+            minStock,
+            status,
+            supplier,
+            lastUpdated
         } = req.body;
 
-        // Validate required fields if needed
-        if (!name || !buyingPrice || !quantity || !thresholdValue || !expiryDate || !availability) {
-            return res.status(400).json({ error: 'Please provide all required fields.' });
-    }
+        // Validate all required fields
+        if (!name || !productId || !sku || !price || !stock || !minStock || !status || !supplier || !lastUpdated) {
+            return res.status(400).json({ error: 'Please provide all required fields: name, productId, sku, price, stock, minStock, status, supplier, lastUpdated.' });
+        }
 
         const product = new Product({
             name,
-            productId,
+            sku,
             category,
-            buyingPrice: buyingPrice ? Number(buyingPrice) : undefined,
-            quantity: quantity ? Number(quantity) : undefined,
-            unit,
-            expiryDate,
-            thresholdValue: thresholdValue ? Number(thresholdValue) : undefined,
-            availability: availability === 'true' || availability === true,
-            imagePath: image ? image.path : undefined, // save the image path or URL in your DB
+            price: Number(price),
+            stock: Number(stock),
+            minStock: Number(minStock),
+            status,
+            supplier,
+            lastUpdated: new Date(lastUpdated),
         });
 
         await product.save();
-
-        res.status(201).json(savedProduct);
 
         res.status(201).json(product);
     } catch (error) {
         next(error);
     }
 };
-  
 
 exports.getAllProducts = async (req, res) => {
     try {
@@ -67,13 +63,15 @@ exports.getProductById = async (req, res, next) => {
 
 exports.updateProduct = async (req, res) => {
     try {
-        const { name, buyingPrice, quantity, thresholdValue, expiryDate, availability } = req.body;
+        const { name, sku, category, price, stock, minStock, status, lastUpdated } = req.body;
         if (name) res.product.name = name;
-        if (buyingPrice) res.product.buyingPrice = buyingPrice;
-        if (quantity) res.product.quantity = quantity;
-        if (thresholdValue) res.product.thresholdValue = thresholdValue;
-        if (expiryDate) res.product.expiryDate = expiryDate;
-        if (availability !== undefined) res.product.availability = availability;
+        if (sku) res.product.sku = sku;
+        if (category) res.product.category = category;
+        if (price) res.product.price = Number(price);
+        if (stock) res.product.stock = Number(stock);
+        if (minStock) res.product.minStock = Number(minStock);
+        if (status) res.product.status = status;
+        if (lastUpdated) res.product.lastUpdated = new Date(lastUpdated);
         await res.product.save();
         res.json(res.product);
     } catch (err) {
@@ -83,7 +81,7 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     try {
-        await res.product.remove();
+        await res.product.deleteOne(); // Updated from remove() to deleteOne() for Mongoose 7+
         res.json({ message: 'Product deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
