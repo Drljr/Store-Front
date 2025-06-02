@@ -1,65 +1,76 @@
-import './Sidebar.css';
-import { useNavigate } from "react-router-dom";
-import { CiHome } from "react-icons/ci";
-import { GiHandTruck } from "react-icons/gi";
-import { IoBarChartOutline } from "react-icons/io5";
-import { FaRegUserCircle } from "react-icons/fa";
-import { BsBox } from "react-icons/bs";
-import { GoChecklist } from "react-icons/go";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineLogout } from "react-icons/md";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./Sidebar.css";
 
-export const Sidebar = () => {
+interface SidebarProps {}
 
-    const navigate = useNavigate();
+const Sidebar: React.FC<SidebarProps> = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    // Renamed functions to reflect their purposes
-    const handleDashboardClick = () => { navigate("/Dashboard") };
-    const handleInventoryClick = () => { navigate("/Inventory") };
-    const handleReportsClick = () => { navigate("/Reports") }
-    const handleOrdersClick = () => { navigate("/Orders") };
-    const handleSupplyClick = () => { navigate("/Suppliers") }
-    const handleManagementClick = () => { navigate("/ManageStore") };
-    const handleSettingsClick = () => { navigate("/Settings") };
-    const handleLogoutClick = () => { navigate("/") };
-    return (
-        <div className='Sidebar'>
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '🏠', path: '/dashboard' },
+    { id: 'inventory', label: 'Inventory', icon: '📋', path: '/inventory' },
+    { id: 'reports', label: 'Reports', icon: '📊', path: '/reports' },
+    { id: 'suppliers', label: 'Suppliers', icon: '🏪', path: '/supply' },
+    { id: 'orders', label: 'Orders', icon: '🛒', path: '/orders' },
+    { id: 'stores', label: 'Manage Stores', icon: '🏬', path: '/management' },
+  ];
 
-            <div className="center">
-                <ul>
-                    <li onClick={handleDashboardClick}>
-                        <span><CiHome className='icon1' /> Dashboard </span>
-                    </li>
-                    <li onClick={handleInventoryClick}>
-                        <span><GiHandTruck className='icon2' /> Inventory </span>
-                    </li>
-                    <li onClick={handleReportsClick}>
-                        <span><IoBarChartOutline className='icon3' /> Reports </span>
-                    </li>
-                    <li onClick={handleSupplyClick}>
-                        <span><FaRegUserCircle className='icon4' /> Suppliers </span>
-                    </li>
-                    <li onClick={handleOrdersClick}>
-                        <span><BsBox className='icon5' /> Orders </span>
-                    </li>
-                    <li onClick={handleManagementClick}>
-                        <span><GoChecklist className='icon6' /> Manage Stores </span>
-                    </li>
-                </ul>
-                            <div className='center2'>
-                <ul>
-                    <li onClick={handleSettingsClick}>
-                        <span><IoSettingsOutline className='icon7' /> Settings </span>
-                    </li>
-                    <li onClick={handleLogoutClick}>
-                        <span><MdOutlineLogout className='icon8' /> Logout </span>
-                    </li>
-                </ul>
-            </div>
-            </div>
+  const bottomMenuItems = [
+    { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
+    { id: 'logout', label: 'Logout', icon: '🚪', path: '/' },
+  ];
 
+  const handleMenuClick = (path: string) => {
+    navigate(path);
+  };
+
+  return (
+    <nav className="sidebar">
+      <div className="logo-container">
+        <div className="logo-icon">📦</div>
+        <div className="logo-text">
+          <div className="logo-title">inventory management</div>
+          <div className="logo-subtitle">Smart Inventory Solutions</div>
         </div>
-    )
-}
+      </div>
+      
+      <div className="nav-menu">
+        {menuItems.map((item) => (
+          <a
+            key={item.id}
+            href="#"
+            className={`nav-item${location.pathname === item.path ? ' active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleMenuClick(item.path);
+            }}
+          >
+            <div className="nav-icon">{item.icon}</div>
+            <span className="nav-label">{item.label}</span>
+          </a>
+        ))}
+      </div>
+      
+      <div className="nav-bottom">
+        {bottomMenuItems.map((item) => (
+          <a
+            key={item.id}
+            href="#"
+            className={`nav-item${location.pathname === item.path ? ' active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleMenuClick(item.path);
+            }}
+          >
+            <div className="nav-icon">{item.icon}</div>
+            <span className="nav-label">{item.label}</span>
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+};
 
 export default Sidebar;
