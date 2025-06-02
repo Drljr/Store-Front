@@ -20,10 +20,9 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // Register User
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
-    // Validation
-    if (!name || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
         res.status(400);
         throw new Error("Please fill all required fields");
     }
@@ -32,7 +31,6 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("Password must be at least 6 characters");
     }
 
-    // Check if user exists
     let userExists;
     try {
         userExists = await User.findOne({ email });
@@ -46,34 +44,39 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("Internal Server Error");
     }
 
-    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    console.log(`Registering user - Original password: ${password}, Hashed: ${hashedPassword}`);
 
-    // Create new user
+    // Combine firstName and lastName into name
+    const name = `${firstName} ${lastName}`.trim();
+
     const user = await User.create({
         name,
         email,
-        password: hashedPassword, // Store the hashed password
+        password: hashedPassword,
     });
 
-    // Generate token
+    console.log(`User created in DB - Stored password: ${user.password}`);
+
     const token = generateToken(user._id);
 
-    // Send HTTP-only cookie
     res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1 day
-        sameSite: "none",
-        secure: true,
+        expires: new Date(Date.now() + 1000 * 86400),
+        sameSite: "lax",
+        secure: false,
     });
 
-    // Respond with user data and token
     if (user) {
-        const { _id, name, email } = user;
+        const { _id, firstName, lastName, email } = user;
         res.status(201).json({
-            _id, name, email, token,
+            _id,
+            firstName,
+            lastName,
+            email,
+            token,
         });
     } else {
         res.status(400);
@@ -85,13 +88,11 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    // Validate request
     if (!email || !password) {
         res.status(400);
         throw new Error("Please fill email and password");
     }
 
-    // Check if user exists
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -99,19 +100,17 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("User not found, please sign up");
     }
 
-    // User exists, check if password is correct
     const passwordIsCorrect = await bcrypt.compare(password, user.password);
+    console.log(`Password comparison: ${passwordIsCorrect}, Input: ${password}, Hashed: ${user.password}`);
 
-    // Generate Token
     const token = generateToken(user._id);
 
-    // Send HTTP-only cookie
     res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1 day
-        sameSite: "none",
-        secure: true,
+        expires: new Date(Date.now() + 1000 * 86400),
+        sameSite: "lax",
+        secure: false,
     });
 
     if (user && passwordIsCorrect) {
@@ -131,8 +130,8 @@ const logout = asyncHandler(async (req, res) => {
         path: "/",
         httpOnly: true,
         expires: new Date(0),
-        sameSite: "none",
-        secure: true,
+        sameSite: "lax",
+        secure: false,
     });
     return res.status(200).json({ message: "Logged out successfully" });
 });

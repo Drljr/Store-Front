@@ -16,30 +16,31 @@ function Login() {
     });
     const [error, setError] = useState<string>('');
     const [success, setSuccess] = useState<string>('');
-    const [loadingSuccess, setLoadingSuccess] = useState<boolean>(false); // New state for loading success
+    const [loadingSuccess, setLoadingSuccess] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleLogin = async (email: string, password: string) => {
+        console.log(`Login attempt with email: ${email}, password: ${password}`); // Added for debugging
         try {
             const response = await api.post('/user/login', { email, password });
-            const { name, email: userEmail } = response.data;
-    
+            const { _id, name, email: userEmail } = response.data;
+
             setSuccess('Login successful');
             setLoadingSuccess(true);
 
-            // Optionally save email in localStorage
+            localStorage.setItem('userId', _id);
             localStorage.setItem('userEmail', userEmail);
             localStorage.setItem('name', name);
-    
+
             setTimeout(() => {
                 navigate('/dashboard');
             }, 1000);
         } catch (err: any) {
-            const message = err.response?.data?.message || 'Login failed';
+            console.error('Login error:', err);
+            const message = err.response?.data?.message || 'Login failed. Please check your network or credentials.';
             setError(message);
         }
     };
-    
 
     useEffect(() => {
         const errorTimer = setTimeout(() => {
@@ -72,10 +73,9 @@ function Login() {
     return (
         <form onSubmit={handleSubmit}>
             <div className='container'>
-                {loadingSuccess && ( // Render loader on login success
+                {loadingSuccess && (
                     <div className="loading-screen">
                         <svg className="loader" viewBox="0 0 48 30" width="48px" height="30px">
-                            {/* Loader SVG code */}
                             <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
                                 <g transform="translate(9.5,19)">
                                     <circle className="loader_tire" r="9" strokeDasharray="56.549 56.549"></circle>
@@ -99,7 +99,7 @@ function Login() {
                                 </g>
                                 <polyline className="loader_seat" points="14 3,18 3" strokeDasharray="5 5"></polyline>
                                 <polyline className="loader_body" points="16 3,24 19,9.5 19,18 8,34 7,24 19" strokeDasharray="79 79"></polyline>
-                                <path className="loader_handlebars" d="m30,2h6s1,0,1,1-1,1-1,1" strokeDasharray="10 10"></path>
+                                <path className="loader_handlebars" d="m30,2h6 s1,0,1,1-1,1-1,1" strokeDasharray="10 10"></path>
                                 <polyline className="loader_front" points="32.5 2,38.5 19" strokeDasharray="19 19"></polyline>
                             </g>
                         </svg>
@@ -120,7 +120,7 @@ function Login() {
                     <div className='email'>
                         <label htmlFor="email">Email</label>
                         <input
-                            type="text"
+                            type="email"
                             id="email"
                             name="email"
                             value={formData.email}

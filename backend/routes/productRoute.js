@@ -5,7 +5,7 @@ const productController = require('../controllers/productController');
 
 
 // Create a new product with image upload handled by multer
-router.post('/', upload.single('image'), productController.createProduct);
+router.post('/', productController.createProduct);
 
 // Get all products
 router.get('/', productController.getAllProducts);
