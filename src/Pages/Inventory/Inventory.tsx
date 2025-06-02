@@ -1,7 +1,6 @@
 import './Inventory.css';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import Navbar from '../../Components/Navbar/Navbar';
-import { ListFilter } from 'lucide-react';
 import { 
   Package, 
   TrendingUp, 
@@ -18,257 +17,195 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from 'react';
 import api from '../../api/axios.js';
-import Modal  from './Modal';
-
-
+import Modal from './Modal';
 
 export const Inventory = () => {
-    // State to manage modal visibility
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    // Function to open the modal
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-    // Function to close the modal
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
-    const [products, setProducts] = useState([]);
-    useEffect(() => {
-        api.get('http://localhost:5000/products')
-          .then(response => setProducts(response.data))
-          .catch(error => console.error("Error fetching products:", error));
-    }, []);
-    
-    // Callback passed to modal to add product to state
-    const handleAddProduct = (newProduct) => {
-        setProducts(prev => [...prev, newProduct]);
-        setIsModalOpen(false);
-    };
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    console.log('Fetching products...');
+    setLoading(true);
+    api.get('/products')
+      .then(response => {
+        console.log('API Response:', response.data);
+        if (Array.isArray(response.data)) {
+          const mappedProducts = response.data.map(product => {
+            if (!product || typeof product !== 'object') {
+              console.warn('Invalid product data:', product);
+              return null;
+            }
+            return {
+              ...product,
+              id: product._id,
+              status: product.status ? product.status.toLowerCase().replace(/ /g, '-') : 'unknown',
+              name: product.name || 'Unnamed Product',
+              sku: product.sku || 'N/A',
+              category: product.category || 'all',
+            };
+          }).filter(product => product !== null); // Remove invalid entries
+          setProducts(mappedProducts);
+        } else {
+          console.error('Unexpected API response format:', response.data);
+          setProducts([]);
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching products:", error);
+        setError(error.response?.data?.message || "Failed to fetch products");
+      })
+      .finally(() => {
+        setLoading(false);
+        console.log('Fetch completed, products:', products);
+      });
+  }, []);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterCategory, setFilterCategory] = useState("all");
-    const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-  
-    // Sample inventory data
-    const inventoryStats = [
-      {
-        title: "Total Products",
-        value: "2,847",
-        change: "+12.5%",
-        trend: "up",
-        icon: Package,
-        color: "blue"
-      },
-      {
-        title: "Low Stock Items",
-        value: "23",
-        change: "-8.2%",
-        trend: "down",
-        icon: AlertTriangle,
-        color: "orange"
-      },
-      {
-        title: "Out of Stock",
-        value: "8",
-        change: "+2.1%",
-        trend: "up",
-        icon: TrendingDown,
-        color: "red"
-      },
-      {
-        title: "Total Categories",
-        value: "156",
-        change: "+5.3%",
-        trend: "up",
-        icon: TrendingUp,
-        color: "green"
-      }
-    ];
-  
-    // const products = [
-    //   {
-    //     id: 1,
-    //     name: "Premium Wireless Headphones",
-    //     sku: "WH-2024-001",
-    //     category: "Electronics",
-    //     price: 299.99,
-    //     stock: 45,
-    //     minStock: 10,
-    //     status: "in-stock",
-    //     supplier: "TechCorp",
-    //     lastUpdated: "2025-06-01"
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "Gaming Mechanical Keyboard",
-    //     sku: "KB-2024-002",
-    //     category: "Electronics",
-    //     price: 159.99,
-    //     stock: 8,
-    //     minStock: 15,
-    //     status: "low-stock",
-    //     supplier: "GameTech",
-    //     lastUpdated: "2025-06-02"
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "Ergonomic Office Chair",
-    //     sku: "CH-2024-003",
-    //     category: "Furniture",
-    //     price: 449.99,
-    //     stock: 0,
-    //     minStock: 5,
-    //     status: "out-of-stock",
-    //     supplier: "OfficePlus",
-    //     lastUpdated: "2025-05-30"
-    //   },
-    //   {
-    //     id: 4,
-    //     name: "Smart Water Bottle",
-    //     sku: "WB-2024-004",
-    //     category: "Lifestyle",
-    //     price: 79.99,
-    //     stock: 67,
-    //     minStock: 20,
-    //     status: "in-stock",
-    //     supplier: "SmartLife",
-    //     lastUpdated: "2025-06-01"
-    //   },
-    //   {
-    //     id: 5,
-    //     name: "Bluetooth Speaker Pro",
-    //     sku: "SP-2024-005",
-    //     category: "Electronics",
-    //     price: 199.99,
-    //     stock: 12,
-    //     minStock: 15,
-    //     status: "low-stock",
-    //     supplier: "AudioMax",
-    //     lastUpdated: "2025-06-02"
-    //   }
-    // ];
-  
-    // const categories = ["all", "Electronics", "Furniture", "Lifestyle", "Sports", "Books"];
-  
-    const handleSelectProduct = (productId: number) => {
-      setSelectedProducts(prev => 
-        prev.includes(productId) 
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
-      );
-    };
-  
-    const handleSelectAll = () => {
-      if (selectedProducts.length === products.length) {
-        setSelectedProducts([]);
-      } else {
-        setSelectedProducts(products.map(p => p.id));
-      }
-    };
-  
-    const filteredProducts = products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = filterCategory === "all" || product.category === filterCategory;
-      return matchesSearch && matchesCategory;
-    });
-  
-    const getStatusColor = (status: string) => {
-      switch (status) {
-        case "in-stock": return "success";
-        case "low-stock": return "warning";
-        case "out-of-stock": return "danger";
-        default: return "neutral";
-      }
-    };
-  
+  const handleAddProduct = async (newProduct) => {
+    try {
+      setProducts(prev => [...prev, { ...newProduct, id: newProduct._id, status: newProduct.status.toLowerCase().replace(/ /g, '-') }]);
+      closeModal();
+    } catch (error) {
+      console.error("Error adding product:", error);
+      setError("Failed to add product");
+    }
+  };
 
-    return (
-      <div className="Container">
-        <Sidebar />
-        <div className="main-content">
-          <Navbar />
-          
-          {/* Header Section */}
-          <div className="inventory-header">
-            <div className="header-content">
-              <h1 className="page-title">Inventory Management</h1>
-              <p className="page-subtitle">Track and manage your product inventory</p>
-            </div>
-            <div className="header-actions">
-              <button className="btn btn-secondary">
-                <Download size={16} />
-                Export
-              </button>
-              <button className="btn btn-primary">
-                <Plus size={16} />
-                Add Product
-              </button>
-            </div>
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+
+  const categories = ["all", ...new Set(products.map(product => product.category))];
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProducts(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProducts.length === products.length) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(products.map(p => p.id));
+    }
+  };
+
+  const filteredProducts = products.filter(product => {
+    // Safeguard against undefined properties
+    const name = product.name || '';
+    const sku = product.sku || '';
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         sku.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === "all" || (product.category || '').toLowerCase() === filterCategory.toLowerCase();
+    return matchesSearch && matchesCategory;
+  });
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "in-stock": return "success";
+      case "low-stock": return "warning";
+      case "out-of-stock": return "danger";
+      default: return "neutral";
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div className="Container">
+      <Sidebar />
+      <div className="main-content">
+        <Navbar />
+        
+        <div className="inventory-header">
+          <div className="header-content">
+            <h1 className="page-title">Inventory Management</h1>
+            <p className="page-subtitle">Track and manage your product inventory</p>
           </div>
-  
-          {/* Overall Inventory Stats */}
-          <div className="inventory-widget1">
-            <h2 className="text-wrapper1">Overall Inventory</h2>
-            <div className="stats-grid">
-              {inventoryStats.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <div key={index} className={`stat-card ${stat.color}`}>
-                    <div className="stat-icon">
-                      <IconComponent size={24} />
-                    </div>
-                    <div className="stat-content">
-                      <h3 className="stat-value">{stat.value}</h3>
-                      <p className="stat-title">{stat.title}</p>
-                      <div className={`stat-change ${stat.trend}`}>
-                        {stat.trend === "up" ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                        <span>{stat.change}</span>
-                      </div>
+          <div className="header-actions">
+            <button className="btn btn-secondary">
+              <Download size={16} />
+              Export
+            </button>
+            <button className="btn btn-primary" onClick={openModal}>
+              <Plus size={16} />
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <div className="inventory-widget1">
+          <h2 className="text-wrapper1">Overall Inventory</h2>
+          <div className="stats-grid">
+            {[
+              { title: "Total Products", value: products.length, change: "+12.5%", trend: "up", icon: Package, color: "blue" },
+              { title: "Low Stock Items", value: products.filter(p => p.stock <= p.minStock && p.stock > 0).length, change: "-8.2%", trend: "down", icon: AlertTriangle, color: "orange" },
+              { title: "Out of Stock", value: products.filter(p => p.stock === 0).length, change: "+2.1%", trend: "up", icon: TrendingDown, color: "red" },
+              { title: "Total Categories", value: new Set(products.map(p => p.category)).size, change: "+5.3%", trend: "up", icon: TrendingUp, color: "green" },
+            ].map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div key={index} className={`stat-card ${stat.color}`}>
+                  <div className="stat-icon">
+                    <IconComponent size={24} />
+                  </div>
+                  <div className="stat-content">
+                    <h3 className="stat-value">{stat.value}</h3>
+                    <p className="stat-title">{stat.title}</p>
+                    <div className={`stat-change ${stat.trend}`}>
+                      {stat.trend === "up" ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                      <span>{stat.change}</span>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
-  
-          {/* Products Section */}
-          <div className="inventory-widget2">
-            <div className="products-header">
-              <h2 className="text-wrapper2">Products</h2>
-              <div className="products-controls">
-                <div className="search-box">
-                  <Search size={16} className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                  />
-                </div>
-                <div className="filter-dropdown">
-                  <Filter size={16} className="filter-icon" />
-                  <select
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                    className="filter-select"
-                  >
-                    {products.map(product => (
-                      <option key={product.id} value={product.category}>
-                        {product.category === "all" ? "All Categories" : product.category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+        </div>
+
+        <div className="inventory-widget2">
+          <div className="products-header">
+            <h2 className="text-wrapper2">Products</h2>
+            <div className="products-controls">
+              <div className="search-box">
+                <Search size={16} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              <div className="filter-dropdown">
+                <Filter size={16} className="filter-icon" />
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="filter-select"
+                >
+                  {categories.map(category => (
+                    <option key={category} value={category}>
+                      {category === "all" ? "All Categories" : category}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-  
-            {/* Products Table */}
-            <div className="products-table-container">
+          </div>
+
+          <div className="products-table-container">
+            {filteredProducts.length === 0 ? (
+              <div>No products found.</div>
+            ) : (
               <table className="products-table">
                 <thead>
                   <tr>
@@ -331,7 +268,7 @@ export const Inventory = () => {
                         </span>
                       </td>
                       <td className="product-supplier">{product.supplier}</td>
-                      <td className="product-updated">{product.lastUpdated}</td>
+                      <td className="product-updated">{new Date(product.lastUpdated).toLocaleDateString()}</td>
                       <td className="product-actions">
                         <div className="action-buttons">
                           <button className="action-btn view" title="View">
@@ -352,22 +289,25 @@ export const Inventory = () => {
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+
+          <div className="table-footer">
+            <div className="selected-info">
+              {selectedProducts.length > 0 && (
+                <span>{selectedProducts.length} item(s) selected</span>
+              )}
             </div>
-  
-            {/* Table Footer */}
-            <div className="table-footer">
-              <div className="selected-info">
-                {selectedProducts.length > 0 && (
-                  <span>{selectedProducts.length} item(s) selected</span>
-                )}
-              </div>
-              <div className="pagination">
-                <span className="page-info">Showing {filteredProducts.length} of {products.length} products</span>
-              </div>
+            <div className="pagination">
+              <span className="page-info">Showing {filteredProducts.length} of {products.length} products</span>
             </div>
           </div>
         </div>
       </div>
-    );
-}
+
+      {isModalOpen && <Modal onClose={closeModal} onAddProduct={handleAddProduct} />}
+    </div>
+  );
+};
+
 export default Inventory;

@@ -28,7 +28,7 @@ exports.createProduct = async (req, res, next) => {
             minStock: Number(minStock),
             status,
             supplier,
-            lastUpdated: new Date(lastUpdated),
+            lastUpdated: lastUpdated ? new Date(lastUpdated) : new Date(),
         });
 
         await product.save();
