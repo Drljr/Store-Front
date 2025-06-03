@@ -1,36 +1,45 @@
 const mongoose = require('mongoose');
-// Order model for the e-commerce application
-// This model defines the structure of an order in the database
 
 const orderSchema = new mongoose.Schema({
     orderId: {
         type: String,
+        unique: true,
         required: true,
-        unique: true
+        default: () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     },
-    products: [{
-        product: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product', required: true
-        },
-        quantity: {
-            type: Number,
-            required: true
-        },
-    }],
-    orderValue: {
+    customer: {
+        type: String,
+        required: true,
+    },
+    items: {
         type: Number,
-        required: true
+        required: true,
+        min: 1
+    },
+    total: {
+        type: Number,
+        required: true,
+        min: 0
     },
     status: {
         type: String,
-        enum: ['Delayed', 'Confirmed', 'Out for delivery', 'Returned'],
-        default: 'Delayed'
+        enum: ['Delivered', 'Pending', 'Processing', 'Shipped'],
+        default: 'Pending'
     },
-    expectedDelivery: {
+    date: {
         type: Date,
-        required: true
+        default: Date.now
     },
+    priority: {
+        type: String,
+        enum: ['low', 'medium', 'high'],
+        default: 'low'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'unpaid'],
+        default: 'unpaid'
+    }
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);

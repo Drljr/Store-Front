@@ -3,7 +3,7 @@ const Order = require('../models/orderModel');
 const orderController = {
     getAllOrders: async (req, res) => {
         try {
-            const orders = await Order.find().populate('products.product');
+            const orders = await Order.find();
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -11,7 +11,7 @@ const orderController = {
     },
     getPurchaseOverview: async (req, res) => {
         try {
-            const orders = await Order.find({ status: { $in: ['Shipped', 'Delivered'] } }).populate('products.product');
+            const orders = await Order.find({ status: { $in: ['Shipped', 'Delivered', 'Pending', 'Processing'] } });
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -19,7 +19,17 @@ const orderController = {
     },
     createOrder: async (req, res) => {
         try {
-            const order = new Order(req.body);
+            const { customer, items, total, status, priority, paymentStatus, date } = req.body;
+            const orderData = {
+                customer,
+                items: Number(items),
+                total: Number(total),
+                status: status || 'Pending',
+                priority: priority || 'low',
+                paymentStatus: paymentStatus || 'unpaid',
+                date: date ? new Date(date) : Date.now(),
+            };
+            const order = new Order(orderData);
             await order.save();
             res.status(201).json(order);
         } catch (error) {

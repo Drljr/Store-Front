@@ -1,72 +1,36 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Eye, Edit, Trash2 } from "lucide-react";
 import "./Orders.css";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import Navbar from "../../Components/Navbar/Navbar";
-
-// Mock data for demonstration
-const mockOrders = [
-  {
-    id: "ORD-001",
-    customer: "Acme Corporation",
-    items: 5,
-    total: 2450.00,
-    status: "delivered",
-    date: "2024-05-28",
-    priority: "high",
-    paymentStatus: "paid"
-  },
-  {
-    id: "ORD-002", 
-    customer: "Tech Solutions Ltd",
-    items: 3,
-    total: 1890.50,
-    status: "shipped",
-    date: "2024-05-30",
-    priority: "medium",
-    paymentStatus: "paid"
-  },
-  {
-    id: "ORD-003",
-    customer: "Global Industries",
-    items: 8,
-    total: 3750.25,
-    status: "processing",
-    date: "2024-06-01",
-    priority: "high",
-    paymentStatus: "pending"
-  },
-  {
-    id: "ORD-004",
-    customer: "StartUp Inc",
-    items: 2,
-    total: 950.00,
-    status: "pending",
-    date: "2024-06-02",
-    priority: "low",
-    paymentStatus: "paid"
-  },
-  {
-    id: "ORD-005",
-    customer: "Enterprise Corp",
-    items: 12,
-    total: 5200.75,
-    status: "delivered",
-    date: "2024-05-25",
-    priority: "high",
-    paymentStatus: "paid"
-  }
-];
+import OrderModal from "./orderModal";
+import api from "../../api/axios.js";
 
 const Orders = () => {
-  const [orders, setOrders] = useState(mockOrders);
-  const [filteredOrders, setFilteredOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [sortBy, setSortBy] = useState("date");
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Update current time every minute
+  const openModal = (order = null) => {
+    setSelectedOrder(order);
+    setIsEditMode(!!order);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+    setIsEditMode(false);
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -74,29 +38,87 @@ const Orders = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Filter and search orders
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get('/orders');
+        const mappedOrders = response.data.map(order => ({
+          ...order,
+          id: order._id,
+          date: order.date ? new Date(order.date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          }) : 'N/A',
+        }));
+        setOrders(mappedOrders);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError(err.response?.data?.message || "Failed to fetch orders");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const handleAddOrder = (newOrder) => {
+    const mappedOrder = {
+      ...newOrder,
+      id: newOrder._id,
+      date: newOrder.date ? new Date(newOrder.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }) : 'N/A',
+    };
+    setOrders(prev => [...prev, mappedOrder]);
+  };
+
+  const handleEditOrder = (updatedOrder) => {
+    const mappedOrder = {
+      ...updatedOrder,
+      id: updatedOrder._id,
+      date: updatedOrder.date ? new Date(updatedOrder.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }) : 'N/A',
+    };
+    setOrders(prev => prev.map(o => o.id === mappedOrder.id ? mappedOrder : o));
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to delete this order?')) {
+      try {
+        await api.delete(`/orders/${orderId}`);
+        setOrders(prev => prev.filter(o => o.id !== orderId));
+      } catch (err) {
+        console.error("Error deleting order:", err);
+        setError("Failed to delete order");
+      }
+    }
+  };
+
   useEffect(() => {
     let filtered = orders;
 
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(order => 
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.id.toLowerCase().includes(searchTerm.toLowerCase())
+        (order.customer || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (order.id || "").toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(order => order.status === statusFilter);
     }
 
-    // Priority filter
     if (priorityFilter !== "all") {
       filtered = filtered.filter(order => order.priority === priorityFilter);
     }
 
-    // Sort orders
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "date":
@@ -104,7 +126,7 @@ const Orders = () => {
         case "total":
           return b.total - a.total;
         case "customer":
-          return a.customer.localeCompare(b.customer);
+          return (a.customer || "").localeCompare(b.customer || "");
         default:
           return 0;
       }
@@ -113,7 +135,6 @@ const Orders = () => {
     setFilteredOrders(filtered);
   }, [orders, searchTerm, statusFilter, priorityFilter, sortBy]);
 
-  // Calculate statistics
   const stats = {
     total: orders.length,
     pending: orders.filter(o => o.status === 'pending').length,
@@ -158,13 +179,15 @@ const Orders = () => {
     });
   };
 
+  if (loading) return <div className="orders-loading">Loading...</div>;
+  if (error) return <div className="orders-error">{error}</div>;
+
   return (
     <div className="orders-layout">
       <Sidebar />
       <div className="orders-main">
         <Navbar />
         <div className="orders-container">
-          {/* Header Section */}
           <div className="orders-header">
             <div className="header-content">
               <div className="title-section">
@@ -179,14 +202,13 @@ const Orders = () => {
                   Last updated: {currentTime.toLocaleTimeString()}
                 </div>
               </div>
-              <button className="add-order-btn">
+              <button className="add-order-btn" onClick={() => openModal()}>
                 <span className="btn-icon">+</span>
                 New Order
               </button>
             </div>
           </div>
 
-          {/* Statistics Grid */}
           <div className="stats-grid">
             <div className="stat-card total-orders">
               <div className="stat-icon-wrapper">
@@ -229,7 +251,6 @@ const Orders = () => {
             </div>
           </div>
 
-          {/* Controls Section */}
           <div className="controls-section">
             <div className="search-container">
               <span className="search-icon">🔍</span>
@@ -278,29 +299,39 @@ const Orders = () => {
             </div>
           </div>
 
-          {/* Orders Grid */}
           <div className="orders-grid">
             {filteredOrders.map((order) => (
               <div key={order.id} className="order-card">
                 <div className="card-header">
                   <div className="order-info">
-                    <h3 className="order-id">{order.id}</h3>
+                    <h3 className="order-id">{order.orderId}</h3>
                     <p className="customer-name">{order.customer}</p>
                   </div>
                   <div className="card-actions">
-                    <span className={`status-badge ${order.status}`}>
+                    <span className={`status-badge ${order.status.toLowerCase()}`}>
                       {getStatusIcon(order.status)} {order.status}
                     </span>
                     <span className={`priority-badge ${order.priority}`}>
                       {getPriorityIcon(order.priority)}
                     </span>
+                    <div className="action-buttons">
+                      <button className="action-btn view-btn" title="View Details" onClick={() => openModal(order)}>
+                        <Eye size={16} />
+                      </button>
+                      <button className="action-btn edit-btn" title="Edit" onClick={() => openModal(order)}>
+                        <Edit size={16} />
+                      </button>
+                      <button className="action-btn delete-btn" title="Delete" onClick={() => handleDeleteOrder(order.id)}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
                 
                 <div className="order-details">
                   <div className="detail-row">
                     <span className="detail-label">📅 Order Date:</span>
-                    <span className="detail-value">{formatDate(order.date)}</span>
+                    <span className="detail-value">{order.date}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">📦 Items:</span>
@@ -322,13 +353,7 @@ const Orders = () => {
                 </div>
                 
                 <div className="card-footer">
-                  <button className="action-btn view-btn">
-                    👁️ View Details
-                  </button>
-                  <button className="action-btn edit-btn">
-                    ✏️ Edit
-                  </button>
-                  <button className="action-btn track-btn">
+                  <button className="action-btn track-btn" title="Track">
                     📍 Track
                   </button>
                 </div>
@@ -336,13 +361,12 @@ const Orders = () => {
             ))}
           </div>
 
-          {/* Empty State */}
           {filteredOrders.length === 0 && (
             <div className="empty-state">
               <div className="empty-icon">📭</div>
               <h3>No orders found</h3>
               <p>Try adjusting your search criteria or create a new order</p>
-              <button className="create-order-btn">Create First Order</button>
+              <button className="create-order-btn" onClick={() => openModal()}>Create First Order</button>
             </div>
           )}
 

@@ -9,7 +9,7 @@ router.get('/', orderController.getAllOrders);
 router.get('/purchase-overview', orderController.getPurchaseOverview);
 
 // Create a new order
-router.post('/', orderController.createOrder);
+router.post('/create', orderController.createOrder);
 
 // Update an order
 router.put('/:id', orderController.updateOrder);
