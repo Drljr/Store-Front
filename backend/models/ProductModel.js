@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['all', 'Electronics', 'Furniture', 'Lifestyle', 'Sports', 'Books'],
+        enum: ['all', 'Electronics', 'Clothings', 'Furniture', 'Lifestyle', 'Sports', 'Books'],
         default: 'all'
     },
     price: {

@@ -6,7 +6,7 @@ const { supplierController } = require('../controllers/supplierController');
 router.get('/', supplierController.getAllSuppliers);
 
 // Create a new supplier
-router.post('/', supplierController.createSupplier);
+router.post('/create', supplierController.createSupplier);
 
 // Update a supplier
 router.put('/:id', supplierController.updateSupplier);

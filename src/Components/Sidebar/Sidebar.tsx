@@ -12,9 +12,9 @@ const Sidebar: React.FC<SidebarProps> = () => {
     { id: 'dashboard', label: 'Dashboard', icon: '🏠', path: '/dashboard' },
     { id: 'inventory', label: 'Inventory', icon: '📋', path: '/inventory' },
     { id: 'reports', label: 'Reports', icon: '📊', path: '/reports' },
-    { id: 'suppliers', label: 'Suppliers', icon: '🏪', path: '/supply' },
+    { id: 'suppliers', label: 'Suppliers', icon: '🏪', path: '/suppliers' },
     { id: 'orders', label: 'Orders', icon: '🛒', path: '/orders' },
-    { id: 'stores', label: 'Manage Stores', icon: '🏬', path: '/management' },
+    { id: 'stores', label: 'Manage Stores', icon: '🏬', path: '/ManageStore' },
   ];
 
   const bottomMenuItems = [
