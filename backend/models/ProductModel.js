@@ -44,6 +44,10 @@ const ProductSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, { timestamps: true });
 
 ProductSchema.pre('save', async function (next) {

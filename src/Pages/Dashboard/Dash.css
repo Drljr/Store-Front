@@ -1,307 +1,314 @@
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #f8f9fa;
-    font-family: "Mulish", sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #333;
+  background-color: #f8f9fa;
+  font-family: "Mulish", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
 }
 
 .Container {
-    display: flex;
-    min-height: 100vh;
-    position: relative;
+  display: flex;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* Main Content Area */
 .main-content {
-    flex: 1;
-    margin-left: 250px;
-    /* Adjust based on your sidebar width */
-    margin-top: 8px;
-    /* Adjust based on your navbar height */
-    padding: 30px;
-    background-color: #f8f9fa;
+  flex: 1;
+  margin-left: 250px;
+  /* Adjust based on your sidebar width */
+  margin-top: 8px;
+  /* Adjust based on your navbar height */
+  padding: 30px;
+  background-color: #f8f9fa;
 }
 
 /* Dashboard Grid Layout */
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
 /* Widget Base Styles */
 .widget {
-    background-color: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #f1f3f4;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f3f4;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .widget:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
-    transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
 }
 
 /* Widget Size Variants */
 .widget-small {
-    min-height: 160px;
+  min-height: 160px;
 }
 
 .widget-medium {
-    min-height: 300px;
+  min-height: 300px;
 }
 
 .widget-large {
-    min-height: 400px;
+  min-height: 400px;
 }
 
 /* Widget Content */
 .widget-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .widget-content {
-    color: #6c757d;
-    font-size: 14px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  color: #6c757d;
+  font-size: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 /* Stats Grid */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .stat-item {
-    text-align: center;
-    padding: 16px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    transition: background-color 0.2s ease;
+  text-align: center;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
 }
 
 .stat-item:hover {
-    background-color: #e9ecef;
+  background-color: #e9ecef;
 }
 
 .stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #007bff;
-    margin-bottom: 4px;
-    line-height: 1.2;
+  font-size: 24px;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 4px;
+  line-height: 1.2;
 }
 
 .stat-label {
-    font-size: 12px;
-    color: #6c757d;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .main-content {
-        margin-left: 200px;
-        /* Adjust for smaller sidebar if needed */
-    }
+  .main-content {
+    margin-left: 200px;
+    /* Adjust for smaller sidebar if needed */
+  }
 }
 
 @media (max-width: 992px) {
-    .main-content {
-        margin-left: 0;
-        margin-top: 60px;
-    }
+  .main-content {
+    margin-left: 0;
+    margin-top: 60px;
+  }
 
-    .dashboard-grid {
-        gap: 20px;
-    }
+  .dashboard-grid {
+    gap: 20px;
+  }
 
-    .widget {
-        padding: 20px;
-    }
+  .widget {
+    padding: 20px;
+  }
 }
 
 @media (max-width: 768px) {
-    .main-content {
-        padding: 20px 15px;
-        margin-top: 60px;
-    }
+  .main-content {
+    padding: 20px 15px;
+    margin-top: 60px;
+  }
 
-    .dashboard-grid {
-        gap: 16px;
-    }
+  .dashboard-grid {
+    gap: 16px;
+  }
 
-    .widget {
-        padding: 16px;
-    }
+  .widget {
+    padding: 16px;
+  }
 
-    .widget-title {
-        font-size: 16px;
-        margin-bottom: 16px;
-    }
+  .widget-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
 
-    .stat-value {
-        font-size: 20px;
-    }
+  .stat-value {
+    font-size: 20px;
+  }
 
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 12px;
-    }
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
 
-    .stat-item {
-        padding: 12px;
-    }
+  .stat-item {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-top: 120px;
+    padding-top: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-    .main-content {
-        padding: 15px 10px;
-    }
+  .main-content {
+    padding: 15px 10px;
+  }
 
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 
-    .widget-title {
-        font-size: 15px;
-    }
+  .widget-title {
+    font-size: 15px;
+  }
 
-    .stat-value {
-        font-size: 18px;
-    }
+  .stat-value {
+    font-size: 18px;
+  }
 
-    .stat-label {
-        font-size: 11px;
-    }
+  .stat-label {
+    font-size: 11px;
+  }
 }
 
 /* Additional utility classes */
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 
 .text-left {
-    text-align: left;
+  text-align: left;
 }
 
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 .mb-2 {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 .mb-3 {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .mb-4 {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .mt-2 {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 .mt-3 {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .mt-4 {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 /* Loading state for widgets */
 .widget-loading {
-    opacity: 0.6;
-    pointer-events: none;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .widget-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #adb5bd;
-    font-style: italic;
-    min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-style: italic;
+  min-height: 100px;
 }
 
 /* Animation for widget appearance */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .widget {
-    animation: fadeInUp 0.5s ease forwards;
+  animation: fadeInUp 0.5s ease forwards;
 }
 
 /* Stagger animation for multiple widgets */
 .widget:nth-child(1) {
-    animation-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .widget:nth-child(2) {
-    animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 .widget:nth-child(3) {
-    animation-delay: 0.3s;
+  animation-delay: 0.3s;
 }
 
 .widget:nth-child(4) {
-    animation-delay: 0.4s;
+  animation-delay: 0.4s;
 }
 
 .widget:nth-child(5) {
-    animation-delay: 0.5s;
+  animation-delay: 0.5s;
 }
 
 .widget:nth-child(6) {
-    animation-delay: 0.6s;
+  animation-delay: 0.6s;
 }
 
 .widget:nth-child(7) {
-    animation-delay: 0.7s;
+  animation-delay: 0.7s;
 }
 
 .widget:nth-child(8) {
-    animation-delay: 0.8s;
+  animation-delay: 0.8s;
 }
