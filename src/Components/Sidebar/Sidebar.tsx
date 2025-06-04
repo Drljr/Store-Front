@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
     { id: 'reports', label: 'Reports', icon: '📊', path: '/reports' },
     { id: 'suppliers', label: 'Suppliers', icon: '🏪', path: '/suppliers' },
     { id: 'orders', label: 'Orders', icon: '🛒', path: '/orders' },
-    { id: 'stores', label: 'Manage Stores', icon: '🏬', path: '/ManageStore' },
+    { id: 'stores', label: 'Manage Stores', icon: '🏬', path: '/Manage-Store' },
   ];
   const bottomMenuItems = [
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
