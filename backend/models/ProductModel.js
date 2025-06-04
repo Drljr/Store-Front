@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const ProductSchema = new mongoose.Schema({
+    productId: {
+        type: String,
+        unique: true,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -31,14 +36,23 @@ const ProductSchema = new mongoose.Schema({
         enum: ['In Stock', 'Out of Stock'],
         default: 'In Stock'
     },
-    supplier: { // Added supplier field
+    supplier: {
         type: String,
         required: true
     },
     lastUpdated: {
         type: Date,
-        required: true
+        default: Date.now
     },
+}, { timestamps: true });
+
+ProductSchema.pre('save', async function (next) {
+    if (!this.productId) {
+        const date = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // YYYYMMDD
+        const count = (await this.constructor.countDocuments({ productId: new RegExp(`^PROD-${date}-`) })) + 1;
+        this.productId = `PROD-${date}-${String(count).padStart(3, '0')}`;
+    }
+    next();
 });
 
 const Product = mongoose.model('Product', ProductSchema);
