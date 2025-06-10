@@ -4,33 +4,63 @@ import Navbar from "../../Components/Navbar/Navbar";
 import api from "../../api/axios.js";
 import "./Dash.css";
 
+interface Product {
+  _id: string;
+  category: string;
+  status: string;
+  stock: number;
+  price?: number; // Added for purchase revenue calculation
+  // Add other fields as needed
+}
+
+interface Order {
+  _id: string;
+  total: number;
+  customer: string;
+  items: { name: string; quantity?: number }[];
+  status: string;
+  date?: string;
+  // Add other fields as needed
+}
+
+interface TopSelling {
+  _id: string;
+  totalSold: number;
+  product: {
+    _id: string;
+    price: number;
+    // Add other fields as needed
+  };
+  // Add other fields as needed
+}
+
 const Dash = () => {
-  const [products, setProducts] = useState([]);
-  const [sales, setSales] = useState([]);
-  const [topSelling, setTopSelling] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [topSelling, setTopSelling] = useState<TopSelling[]>([]);
 
   // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch products
-        const productsResponse = await api.get("/products");
+        const productsResponse = await api.get<Product[]>("/products");
         if (Array.isArray(productsResponse.data)) {
           setProducts(productsResponse.data);
         } else {
           console.error("Unexpected products API response:", productsResponse.data);
         }
 
-        // Fetch sales
-        const salesResponse = await api.get("/sales");
-        if (Array.isArray(salesResponse.data)) {
-          setSales(salesResponse.data);
+        // Fetch orders (replacing sales)
+        const ordersResponse = await api.get<Order[]>("/orders");
+        if (Array.isArray(ordersResponse.data)) {
+          setOrders(ordersResponse.data);
         } else {
-          console.error("Unexpected sales API response:", salesResponse.data);
+          console.error("Unexpected orders API response:", ordersResponse.data);
         }
 
         // Fetch top selling products
-        const topSellingResponse = await api.get("/sales/top-selling");
+        const topSellingResponse = await api.get<TopSelling[]>("/sales/top-selling");
         if (Array.isArray(topSellingResponse.data)) {
           setTopSelling(topSellingResponse.data);
         } else {
@@ -44,19 +74,24 @@ const Dash = () => {
   }, []);
 
   // Calculate stats based on fetched data
-  const totalSales = sales.reduce((sum, sale) => sum + sale.totalRevenue, 0).toLocaleString();
-  const totalOrders = sales.length;
+  const totalSales = orders.reduce((sum, order) => sum + (order.total || 0), 0).toLocaleString();
+  const totalOrders = orders.length;
   const totalItems = products.length;
   const categories = [...new Set(products.map(p => p.category))].length;
   const activeProducts = products.filter(p => p.status === "Active").length;
   const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 20).length; // Low stock (0 < stock <= 20)
   const outOfStockProducts = products.filter(p => p.stock === 0).length; // Out of stock (stock = 0)
-  const completedOrders = sales.filter(s => s.status === "Completed").length;
-  const pendingOrders = sales.filter(s => s.status === "Pending").length;
-  const shippedOrders = sales.filter(s => s.status === "Shipped").length;
-  const cancelledOrders = sales.filter(s => s.status === "Cancelled").length;
+  const completedOrders = orders.filter(o => o.status === "Completed").length;
+  const pendingOrders = orders.filter(o => o.status === "Pending").length;
+  const shippedOrders = orders.filter(o => o.status === "Shipped").length;
+  const cancelledOrders = orders.filter(o => o.status === "Cancelled").length;
   const topSellingUnits = topSelling[0]?.totalSold || 0;
   const topSellingRevenue = topSelling[0]?.product?.price * topSelling[0]?.totalSold || 0;
+
+  // Mock purchase data from products (since no /purchases endpoint)
+  const totalPurchases = products.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0).toLocaleString();
+  const purchaseOrders = Math.floor(products.length * 0.5); // Mock: assume half the products are from purchase orders
+  const suppliers = Math.floor(categories * 0.3); // Mock: assume 30% of categories have unique suppliers
 
   return (
     <div className="Container">
@@ -103,15 +138,15 @@ const Dash = () => {
             <div className="widget-content">
               <div className="stats-grid">
                 <div className="stat-item">
-                  <div className="stat-value">$18,2K</div>
+                  <div className="stat-value">${totalPurchases}</div>
                   <div className="stat-label">Total Purchases</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">67</div>
+                  <div className="stat-value">{purchaseOrders}</div>
                   <div className="stat-label">Purchase Orders</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">23</div>
+                  <div className="stat-value">{suppliers}</div>
                   <div className="stat-label">Suppliers</div>
                 </div>
               </div>
@@ -148,15 +183,15 @@ const Dash = () => {
                   <div className="stat-label">Total Revenue</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">$18,2K</div> {/* Missing /purchases */}
+                  <div className="stat-value">${totalPurchases}</div>
                   <div className="stat-label">Total Expenses</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">${(parseFloat(totalSales.replace(/,/g, '')) - 18200).toLocaleString()}</div>
+                  <div className="stat-value">${(parseFloat(totalSales.replace(/,/g, '')) - parseFloat(totalPurchases.replace(/,/g, ''))).toLocaleString()}</div>
                   <div className="stat-label">Net Profit</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">{totalSales ? ((parseFloat(totalSales.replace(/,/g, '')) - 18200) / parseFloat(totalSales.replace(/,/g, '')) * 100).toFixed(1) : '0'}%</div>
+                  <div className="stat-value">{totalSales && totalPurchases ? ((parseFloat(totalSales.replace(/,/g, '')) - parseFloat(totalPurchases.replace(/,/g, ''))) / parseFloat(totalSales.replace(/,/g, '')) * 100).toFixed(1) : '0'}%</div>
                   <div className="stat-label">Profit Margin</div>
                 </div>
               </div>

@@ -1,44 +1,111 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Package, DollarSign, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, Package, DollarSign, ArrowUpRight } from 'lucide-react';
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import Navbar from "../../Components/Navbar/Navbar";
+import api from '../../api/axios.js'; // Assuming axios is configured here
 import './Reports.css';
 
 const Reports = () => {
   const [data, setData] = useState({
     overview: {
-      totalRevenue: 125000,
-      totalOrders: 1250,
-      totalCustomers: 850,
-      growthRate: 12.5
+      totalRevenue: 0,
+      totalOrders: 0,
+      totalCustomers: 0,
+      growthRate: 0
     },
-    bestSellingCategory: [
-      { name: 'Electronics', sales: 45000, percentage: 36 },
-      { name: 'Clothing', sales: 32000, percentage: 25.6 },
-      { name: 'Home & Garden', sales: 28000, percentage: 22.4 },
-      { name: 'Books', sales: 20000, percentage: 16 }
-    ],
+    bestSellingCategory: [],
     profitRevenue: {
-      revenue: 125000,
-      profit: 32500,
-      profitMargin: 26,
-      monthlyGrowth: 8.3
+      revenue: 0,
+      profit: 0,
+      profitMargin: 0,
+      monthlyGrowth: 0
     },
-    bestSellingProducts: [
-      { name: 'Wireless Headphones', sales: 320, revenue: 25600 },
-      { name: 'Smart Watch', sales: 280, revenue: 42000 },
-      { name: 'Laptop Stand', sales: 450, revenue: 13500 },
-      { name: 'Phone Case', sales: 620, revenue: 12400 }
-    ]
+    bestSellingProducts: []
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulate data loading
-    const timer = setTimeout(() => {
-      console.log('Data loaded');
-    }, 1000);
-    return () => clearTimeout(timer);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get('/orders');
+        const orders = response.data.map(order => ({
+          ...order,
+          id: order._id,
+          total: order.total || 0,
+          customer: order.customer || `Customer${order._id}`,
+          items: Array.isArray(order.items) ? order.items : [{ name: 'Item', quantity: 1 }],
+          date: order.date ? new Date(order.date) : new Date(),
+          category: order.category || order.items[0]?.name.split(' ')[0] || 'Uncategorized'
+        }));
+
+        // Calculate Overview
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+        const totalOrders = orders.length;
+        const totalCustomers = new Set(orders.map(order => order.customer)).size;
+        const growthRate = 12.5; // Mock growth rate; adjust if backend provides historical data
+
+        // Calculate Best Selling Categories
+        const categorySales = orders.reduce((acc, order) => {
+          const cat = order.category;
+          acc[cat] = (acc[cat] || 0) + order.total;
+          return acc;
+        }, {});
+        const totalCategorySales = Object.values(categorySales).reduce((a, b) => a + b, 0);
+        const bestSellingCategory = Object.entries(categorySales)
+          .map(([name, sales]) => ({
+            name,
+            sales,
+            percentage: ((sales / totalCategorySales) * 100).toFixed(1)
+          }))
+          .sort((a, b) => b.sales - a.sales)
+          .slice(0, 4); // Top 4 categories
+
+        // Calculate Profit & Revenue
+        const revenue = totalRevenue;
+        const profitMargin = 26; // Mock profit margin; adjust if backend provides
+        const profit = (revenue * (profitMargin / 100)).toFixed(2);
+        const monthlyGrowth = 8.3; // Mock monthly growth; adjust with historical data
+
+        // Calculate Best Selling Products
+        const productSales = orders.reduce((acc, order) => {
+          order.items.forEach(item => {
+            const productName = item.name || 'Unknown';
+            acc[productName] = (acc[productName] || 0) + (item.quantity || 1);
+          });
+          return acc;
+        }, {});
+        const bestSellingProducts = Object.entries(productSales)
+          .map(([name, sales]) => ({
+            name,
+            sales,
+            revenue: orders
+              .filter(o => o.items.some(i => i.name === name))
+              .reduce((sum, o) => sum + o.total, 0) / sales // Approx revenue per unit sold
+          }))
+          .sort((a, b) => b.sales - a.sales)
+          .slice(0, 4); // Top 4 products
+
+        setData({
+          overview: { totalRevenue, totalOrders, totalCustomers, growthRate },
+          bestSellingCategory,
+          profitRevenue: { revenue, profit, profitMargin, monthlyGrowth },
+          bestSellingProducts
+        });
+      } catch (err) {
+        console.error('Error fetching orders for reports:', err);
+        setError(err.response?.data?.message || 'Failed to fetch reports data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  if (loading) return <div className="reports-loading">Loading...</div>;
+  if (error) return <div className="reports-error">{error}</div>;
 
   return (
     <div className="reports-container">

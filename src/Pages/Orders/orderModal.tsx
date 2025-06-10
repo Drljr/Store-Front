@@ -1,8 +1,8 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api/axios.js";
 import "./orderModal.css";
 
-const orderModal = ({ onClose, onAddOrder, initialData }) => {
+const OrderModal = ({ onClose, onAddOrder, onEditOrder, initialData }) => {
   const [orderData, setOrderData] = useState({
     customer: "",
     items: "",
@@ -24,6 +24,15 @@ const orderModal = ({ onClose, onAddOrder, initialData }) => {
         priority: initialData.priority || "low",
         paymentStatus: initialData.paymentStatus || "unpaid",
       });
+    } else {
+      setOrderData({
+        customer: "",
+        items: "",
+        total: "",
+        status: "Pending",
+        priority: "low",
+        paymentStatus: "unpaid",
+      });
     }
   }, [initialData]);
 
@@ -40,34 +49,45 @@ const orderModal = ({ onClose, onAddOrder, initialData }) => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/orders/${initialData ? initialData.id : 'create'}`,
-        {
-          method: initialData ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            customer: orderData.customer,
-            items: Number(orderData.items),
-            total: Number(orderData.total),
-            status: orderData.status,
-            priority: orderData.priority,
-            paymentStatus: orderData.paymentStatus,
-            date: initialData ? initialData.date : undefined,
-        }),
+      let response;
+      if (initialData) {
+        // Edit existing order
+        response = await api.put(`/orders/${initialData.id}`, {
+          customer: orderData.customer,
+          items: Number(orderData.items),
+          total: Number(orderData.total),
+          status: orderData.status,
+          priority: orderData.priority,
+          paymentStatus: orderData.paymentStatus,
+          date: initialData.date || new Date(),
+        });
+        if (response.status === 200) {
+          onEditOrder(response.data);
+        } else {
+          throw new Error("Unexpected response status for edit");
         }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add/edit order");
+      } else {
+        // Add new order
+        response = await api.post('/orders/create', {
+          customer: orderData.customer,
+          items: Number(orderData.items),
+          total: Number(orderData.total),
+          status: orderData.status,
+          priority: orderData.priority,
+          paymentStatus: orderData.paymentStatus,
+          date: new Date(),
+        });
+        if (response.status === 201) {
+          onAddOrder(response.data);
+        } else {
+          throw new Error("Unexpected response status for create");
+        }
       }
 
-      const newOrder = await response.json();
-      onAddOrder(newOrder);
       onClose();
     } catch (error) {
       console.error("Error adding/editing order:", error);
-      setError(error.message);
+      setError(error.response?.data?.message || "Failed to add/edit order");
     }
   };
 
@@ -168,4 +188,4 @@ const orderModal = ({ onClose, onAddOrder, initialData }) => {
   );
 };
 
-export default orderModal;
+export default OrderModal;

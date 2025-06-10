@@ -25,6 +25,7 @@ const Orders = () => {
     setIsEditMode(!!order);
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
@@ -43,6 +44,7 @@ const Orders = () => {
       setLoading(true);
       try {
         const response = await api.get('/orders');
+        console.log("Fetched orders:", response.data); // Debug log
         const mappedOrders = response.data.map(order => ({
           ...order,
           id: order._id,
@@ -73,6 +75,7 @@ const Orders = () => {
         year: 'numeric'
       }) : 'N/A',
     };
+    console.log("Added order:", mappedOrder); // Debug log
     setOrders(prev => [...prev, mappedOrder]);
   };
 
@@ -86,6 +89,7 @@ const Orders = () => {
         year: 'numeric'
       }) : 'N/A',
     };
+    console.log("Edited order:", mappedOrder); // Debug log
     setOrders(prev => prev.map(o => o.id === mappedOrder.id ? mappedOrder : o));
   };
 
@@ -112,11 +116,11 @@ const Orders = () => {
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(order => order.status === statusFilter);
+      filtered = filtered.filter(order => order.status.toLowerCase() === statusFilter.toLowerCase());
     }
 
     if (priorityFilter !== "all") {
-      filtered = filtered.filter(order => order.priority === priorityFilter);
+      filtered = filtered.filter(order => order.priority.toLowerCase() === priorityFilter.toLowerCase());
     }
 
     filtered.sort((a, b) => {
@@ -136,17 +140,17 @@ const Orders = () => {
   }, [orders, searchTerm, statusFilter, priorityFilter, sortBy]);
 
   const stats = {
-    total: orders.length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    processing: orders.filter(o => o.status === 'processing').length,
-    shipped: orders.filter(o => o.status === 'shipped').length,
-    delivered: orders.filter(o => o.status === 'delivered').length,
-    totalValue: orders.reduce((sum, order) => sum + order.total, 0),
-    avgOrderValue: orders.length > 0 ? orders.reduce((sum, order) => sum + order.total, 0) / orders.length : 0
+    total: filteredOrders.length,
+    pending: filteredOrders.filter(order => order.status.toLowerCase() === 'pending').length,
+    processing: filteredOrders.filter(order => order.status.toLowerCase() === 'processing').length,
+    shipped: filteredOrders.filter(order => order.status.toLowerCase() === 'shipped').length,
+    delivered: filteredOrders.filter(order => order.status.toLowerCase() === 'delivered').length,
+    totalValue: filteredOrders.reduce((sum, order) => sum + (order.total || 0), 0),
+    avgOrderValue: filteredOrders.length > 0 ? filteredOrders.reduce((sum, order) => sum + (order.total || 0), 0) / filteredOrders.length : 0
   };
 
   const getStatusIcon = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending': return '⏳';
       case 'processing': return '⚙️';
       case 'shipped': return '🚚';
@@ -156,7 +160,7 @@ const Orders = () => {
   };
 
   const getPriorityIcon = (priority) => {
-    switch (priority) {
+    switch (priority.toLowerCase()) {
       case 'high': return '🔴';
       case 'medium': return '🟡';
       case 'low': return '🟢';
@@ -304,7 +308,7 @@ const Orders = () => {
               <div key={order.id} className="order-card">
                 <div className="card-header">
                   <div className="order-info">
-                    <h3 className="order-id">{order.orderId}</h3>
+                    <h3 className="order-id">{order.orderId || order.id}</h3>
                     <p className="customer-name">{order.customer}</p>
                   </div>
                   <div className="card-actions">
@@ -351,12 +355,6 @@ const Orders = () => {
                     <span className="amount">{order.total.toLocaleString()}</span>
                   </div>
                 </div>
-                
-                <div className="card-footer">
-                  <button className="action-btn track-btn" title="Track">
-                    📍 Track
-                  </button>
-                </div>
               </div>
             ))}
           </div>
@@ -369,7 +367,7 @@ const Orders = () => {
               <button className="create-order-btn" onClick={() => openModal()}>Create First Order</button>
             </div>
           )}
-
+          
           {/* Quick Stats Bar */}
           <div className="quick-stats">
             <div className="quick-stat">
@@ -395,6 +393,16 @@ const Orders = () => {
           </div>
         </div>
       </div>
+
+      {/* Render the OrderModal */}
+      {isModalOpen && (
+        <OrderModal
+          onClose={closeModal}
+          onAddOrder={handleAddOrder}
+          onEditOrder={handleEditOrder}
+          initialData={selectedOrder}
+        />
+      )}
     </div>
   );
 };
